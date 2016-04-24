@@ -2,9 +2,11 @@ import React from 'react';
 
 var Account = React.createClass({
   render: function() {
-    <div>
-      Account
-    </div>
+    return (
+      <div>
+        {this.props.account.name}
+      </div>
+    );
   }
 });
 
