@@ -4,7 +4,7 @@ var Account = React.createClass({
   render: function() {
     return (
       <div>
-        {this.props.account.name}
+        <a href onClick={this.props['click-handler']} id={'acct-' + this.props.account.id.toString()}>{this.props.account.name}</a>
       </div>
     );
   }
