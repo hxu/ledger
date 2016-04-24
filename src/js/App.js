@@ -3,8 +3,8 @@ import data from './data';
 import CONSTANTS from './constants';
 import Account from './Account';
 
-var AccountList = React.createClass({
-  render: function() {
+class AccountList extends React.Component{
+  render() {
     console.log(this.props);
     var clickHandler = this.props['click-handler'];
     return (
@@ -15,9 +15,9 @@ var AccountList = React.createClass({
       </div>
     )
   }
-});
+}
 
-export class App extends React.Component{
+class App extends React.Component{
   constructor(props) {
     super(props);
     console.log(data);
@@ -29,7 +29,9 @@ export class App extends React.Component{
     e.preventDefault();
     console.log('this: ');
     console.log(this);
+    console.log('event: ');
     console.log(e);
+    console.log(e.target);
   }
   
   render() {
