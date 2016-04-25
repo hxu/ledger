@@ -21,7 +21,10 @@ class App extends React.Component{
   constructor(props) {
     super(props);
     console.log(data);
-    this.state = Object.assign({}, data);
+    this.state = {
+      selectedAccount: null,
+      data: Object.assign({}, data)
+    };
     this.handleAccountClick = this.handleAccountClick.bind(this);
   }
  
@@ -32,6 +35,7 @@ class App extends React.Component{
     console.log('event: ');
     console.log(e);
     console.log(e.target);
+    this.setState({selectedAccount: e.target.key});
   }
   
   render() {
@@ -39,7 +43,8 @@ class App extends React.Component{
       <div>
         <div>Hello World</div>
         <div><pre>{JSON.stringify(this.state)}</pre></div>
-        <AccountList accounts={this.state.accounts} click-handler={this.handleAccountClick} />
+        <AccountList accounts={this.state.data.accounts} click-handler={this.handleAccountClick} />
+        <div>Selected account: {this.state.selectedAccount}</div>
       </div>
     );
   }
