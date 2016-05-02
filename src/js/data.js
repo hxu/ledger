@@ -73,7 +73,7 @@ const data = {
   splits: [
     {
       id: 1,
-      account: 6,
+      account: 7,
       amount: 10000,
       timestamp: Date.UTC(2016, 4, 1),
       transaction: 1
@@ -87,7 +87,7 @@ const data = {
     },
     {
       id: 3,
-      account: 8,
+      account: 9,
       amount: 1000,
       timestamp: Date.UTC(2016, 4, 1),
       transaction: 1,
