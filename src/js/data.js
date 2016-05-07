@@ -36,7 +36,7 @@ const data = {
       id: 6,
       name: 'Platinum credit card',
       type: CONSTANTS.ACCT_TYPE.LIABILITY,
-      parent: 4
+      parent: 5
     },
     {
       id: 7,

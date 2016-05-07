@@ -7,7 +7,6 @@ import moment from 'moment';
 
 class AccountList extends React.Component{
   render() {
-    console.log(this.props);
     var clickHandler = this.props['click-handler'];
     return (
       <div>
@@ -98,9 +97,42 @@ class SplitRow extends React.Component {
   }
 }
 
+function getChildrenForAccount(acct, accts) {
+  if (_.isNumber(acct) || _.isNil(acct)) {
+    // Return like for like
+    return _.filter(accts, {'parent': acct}).map(function(a) { return a.id; });
+  } else if (_.isPlainObject(acct)) {
+    return _.filter(accts, {'parent': acct.id});
+  } else {
+    throw new Exception('Can only find children accounts for an account ID or account object');
+  }
+}
+
+function getSplitsForAccount(acctId, splits) {
+  var accts;
+  if (_.isNumber(acctId)) {
+    accts = new Set([acctId]);
+  } else {
+    accts = new Set(acctId);
+  }
+
+  console.log(acctId);
+  console.log('getting splits for accounts: ');
+  console.log(accts);
+
+  var res = [];
+  if (splits !== undefined) {
+    res = _.filter(splits, function(t) {
+      return accts.has(t.account);
+    });
+  }
+  return res;
+}
+
 class App extends React.Component{
   constructor(props) {
     super(props);
+    console.log('Data');
     console.log(data);
     this.state = {
       selectedAccount: null,
@@ -109,16 +141,46 @@ class App extends React.Component{
     this.handleAccountClick = this.handleAccountClick.bind(this);
   }
   
-  getSplitsForAccount(acctId) {
-    var splits = [];
-    if (this.state.data.splits !== undefined) {
-      splits = _.filter(this.state.data.splits, function(t) {
-        return t.account === acctId;
-      });
-    }
-    return splits;
+  /* Try calculating on the fly each time
+  loadAccounts(accounts) {
+    var data = {
+      accounts,
+      children: _.groupBy(accounts, 'parent'),
+      byId: _.keyBy(accounts, 'id')
+    };
+    
+    // Replace id reference to parent with the actual object reference
+    accounts.forEach(function(acct) {
+      if (!_.isNil(acct.parent)) {
+        acct.parent = data.byId[acct.parent];
+      }
+    });
+    
+    return data;
   }
+  */
+  
+  getAccountById(id) {
+    return _.find(this.state.data.accounts, {'id': id});
+  }
+  
  
+  addAccount(acct) {
+    this.state.data.accounts.push(acct);
+  }
+  
+  removeAccount(acct) {
+    var acctId;
+    if (_.isPlainObject(acct)) {
+      acctId = acct.id;
+    } else {
+      acctId = act;
+    }
+    
+    // FIXME: finish implementing this
+  }
+  
+
   handleAccountClick(acct, e) {
     e.preventDefault();
     this.setState({selectedAccount: acct});
@@ -137,7 +199,8 @@ class App extends React.Component{
         })()}
         {(() => {
           if (this.state.selectedAccount) {
-            return <AccountDetail account={this.state.selectedAccount} splits={this.getSplitsForAccount(this.state.selectedAccount.id)} />
+            var childAccts = getChildrenForAccount(this.state.selectedAccount.id, this.state.data.accounts);
+            return <AccountDetail account={this.state.selectedAccount} splits={getSplitsForAccount(_.concat(childAccts, this.state.selectedAccount.id), this.state.data.splits)} />
           }
         })()}
       </div>
