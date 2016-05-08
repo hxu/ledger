@@ -6,17 +6,70 @@ import _ from 'lodash';
 import moment from 'moment';
 
 class AccountList extends React.Component{
+  constructor(props) {
+    super(props);
+  }
+  
   render() {
-    var clickHandler = this.props['click-handler'];
+    // Want all of the accounts with no parent at the front
+    var accts = _.orderBy(this.props.accounts, ['parent', 'name'], ['desc', 'asc']);
+    var byType = _.groupBy(accts, 'type');
+    var byParent = _.groupBy(accts, 'parent');
+    var selectHandler = this.props['select-handler'];
+    var removeHandler = this.props['remove-handler'];
+    console.log(accts);
+    console.log(byType);
+
+    var makeAccount = function(acct, depth) {
+      return (
+        <Account
+          select-handler={(e) => selectHandler(acct, e)}
+          remove-handler={(e) => removeHandler(acct, e)}
+          depth={depth}
+          key={acct.id}
+          account={acct} />
+      );
+    };
+    
+    var makeAccounts = function(accts, seen, depth) {
+      /* Produces a list of accounts.  If it encounters a child tree, then it recurses at a greater depth
+      
+       */
+      depth = depth || 0;
+      seen = seen || new Set([]);
+      var res = [];
+      accts.map(function(acct) {
+        if (!seen.has(acct.id)) {
+          res.push(makeAccount(acct, depth));
+          seen.add(acct.id);
+          
+          if (acct.id in byParent) {
+            res.push(...makeAccounts(byParent[acct.id], seen, depth + 1));
+          }
+        }
+      });
+      return res;
+    };
+    
     return (
       <div>
-        {this.props.accounts.map(function(acct) {
-          return <Account click-handler={(e) => clickHandler(acct, e)} key={acct.id} account={acct} />
-        })}
+        <h5>Assets</h5>
+        {makeAccounts(byType[CONSTANTS.ACCT_TYPE.ASSET])}
+        <h5>Liabilities</h5>
+        {makeAccounts(byType[CONSTANTS.ACCT_TYPE.LIABILITY])}
+        <h5>Equity</h5>
+        {makeAccounts(byType[CONSTANTS.ACCT_TYPE.EQUITY])}
+        <h5>Income</h5>
+        {makeAccounts(byType[CONSTANTS.ACCT_TYPE.INCOME])}
+        <h5>Expense</h5>
+        {makeAccounts(byType[CONSTANTS.ACCT_TYPE.EXPENSE])}
       </div>
     )
   }
 }
+AccountList.defaultProps = {
+  depth: 0
+};
 
 class AccountDetail extends React.Component {
   render() {
@@ -129,6 +182,19 @@ function getSplitsForAccount(acctId, splits) {
   return res;
 }
 
+function removeAccount(acct, accts) {
+    var acctId;
+    if (_.isPlainObject(acct)) {
+      acctId = acct.id;
+    } else {
+      acctId = act;
+    }
+    
+    // FIXME: finish implementing this
+  }
+  
+
+
 class App extends React.Component{
   constructor(props) {
     super(props);
@@ -138,7 +204,7 @@ class App extends React.Component{
       selectedAccount: null,
       data: Object.assign({}, data)
     };
-    this.handleAccountClick = this.handleAccountClick.bind(this);
+    this.selectAccountHandler = this.selectAccountHandler.bind(this);
   }
   
   /* Try calculating on the fly each time
@@ -169,21 +235,16 @@ class App extends React.Component{
     this.state.data.accounts.push(acct);
   }
   
-  removeAccount(acct) {
-    var acctId;
-    if (_.isPlainObject(acct)) {
-      acctId = acct.id;
-    } else {
-      acctId = act;
-    }
-    
-    // FIXME: finish implementing this
-  }
-  
 
-  handleAccountClick(acct, e) {
+  selectAccountHandler(acct, e) {
+    console.log('selecting');
+    console.log(acct);
     e.preventDefault();
     this.setState({selectedAccount: acct});
+  }
+  
+  removeAccountHandler(acct, e) {
+    e.preventDefault();
   }
 
   render() {
@@ -191,7 +252,7 @@ class App extends React.Component{
       <div>
         <div>Hello World</div>
         <div><pre>{JSON.stringify(this.state)}</pre></div>
-        <AccountList accounts={this.state.data.accounts} click-handler={this.handleAccountClick} />
+        <AccountList accounts={this.state.data.accounts} select-handler={this.selectAccountHandler} />
         {(() => {
           if (this.state.selectedAccount) {
             return <div>Selected account: {this.state.selectedAccount.id}</div>
