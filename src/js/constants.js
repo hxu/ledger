@@ -5,7 +5,7 @@ const CONSTANTS = {
     INCOME: 3,
     EXPENSE: 4,
     EQUITY: 5
-  }
+  },
 };
 
 export default CONSTANTS;

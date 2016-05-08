@@ -8,7 +8,6 @@ import AccountList from './AccountList';
 import AccountDetail from './AccountDetail';
 
 
-
 function getChildrenForAccount(acct, accts) {
   if (_.isNumber(acct) || _.isNil(acct)) {
     // Return like for like
@@ -70,6 +69,14 @@ function removeAccount(acct, accts, splits) {
   return [newAccts, newSplits];
 }
 
+function addAccount(acct, accts) {
+  var maxId = parseInt(_.maxBy(_.keys(accts), parseInt));
+  var newAccount = _.clone(acct);
+  newAccount.id = maxId + 1;
+  accts[newAccount.id] = newAccount;
+  return accts;
+}
+
 
 export default class App extends React.Component{
   constructor(props) {
@@ -78,10 +85,14 @@ export default class App extends React.Component{
     console.log(data);
     this.state = {
       selectedAccount: null,
-      data: Object.assign({}, data)
+      accounts: data.accounts,
+      splits: data.splits,
+      transactions: data.transactions,
+      prices: data.prices,
     };
     this.selectAccountHandler = this.selectAccountHandler.bind(this);
     this.removeAccountHandler = this.removeAccountHandler.bind(this);
+    this.addAccountHandler = this.addAccountHandler.bind(this);
   }
   
   /* Try calculating on the fly each time
@@ -103,13 +114,11 @@ export default class App extends React.Component{
   }
   */
   
-  getAccountById(id) {
-    return this.state.data.accounts[id];
-  }
-  
- 
-  addAccount(acct) {
-    this.state.data.accounts[acct.id] = acct;
+
+  addAccountHandler(acct, e) {
+    e.preventDefault();
+    var accts = addAccount(acct, this.state.accounts);
+    this.setState({accounts: accts});
   }
   
 
@@ -124,8 +133,8 @@ export default class App extends React.Component{
     console.log('removing');
     console.log(acct);
     e.preventDefault();
-    var [accts, splits] = removeAccount(acct, this.state.data.accounts, this.state.data.splits);
-    this.setState({data: {accounts: accts, splits: splits}});
+    var [accts, splits] = removeAccount(acct, this.state.accounts, this.state.splits);
+    this.setState({accounts: accts, splits: splits});
   }
 
   render() {
@@ -136,9 +145,10 @@ export default class App extends React.Component{
         <div>Hello World</div>
         <div><pre>{JSON.stringify(this.state)}</pre></div>
         <AccountList
-          accounts={this.state.data.accounts}
+          accounts={this.state.accounts}
           select-handler={this.selectAccountHandler}
           remove-handler={this.removeAccountHandler}
+          add-handler={this.addAccountHandler}
         />
         {(() => {
           if (this.state.selectedAccount) {
@@ -147,8 +157,8 @@ export default class App extends React.Component{
         })()}
         {(() => {
           if (this.state.selectedAccount) {
-            var childAccts = getChildrenForAccount(this.state.selectedAccount.id, this.state.data.accounts);
-            return <AccountDetail account={this.state.selectedAccount} splits={getSplitsForAccount(_.concat(childAccts, this.state.selectedAccount.id), this.state.data.splits)} />
+            var childAccts = getChildrenForAccount(this.state.selectedAccount.id, this.state.accounts);
+            return <AccountDetail account={this.state.selectedAccount} splits={getSplitsForAccount(_.concat(childAccts, this.state.selectedAccount.id), this.state.splits)} />
           }
         })()}
       </div>

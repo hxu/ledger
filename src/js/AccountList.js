@@ -6,11 +6,56 @@ import Account from './Account';
 export default class AccountList extends React.Component{
   constructor(props) {
     super(props);
+    this.state = {
+      newAccount: {
+        name: '',
+        type: '',
+        parent: ''
+      }
+    };
+    this.updateName = this.updateName.bind(this);
+    this.updateType = this.updateType.bind(this);
+    this.updateParent = this.updateParent.bind(this);
+    this.newAccount = this.newAccount.bind(this);
+  }
+
+  updateName(e) {
+    var newState = _.assign(_.clone(this.state.newAccount), {name: e.target.value});
+    this.setState({newAccount: newState});
+  }
+  
+  updateType(e) {
+    var newState = _.assign(_.clone(this.state.newAccount), {type: e.target.value});
+    this.setState({newAccount: newState});
+  }
+  
+  updateParent(e) {
+    var newState = _.assign(_.clone(this.state.newAccount), {parent: e.target.value});
+    this.setState({newAccount: newState});
+  }
+  
+  newAccount(e) {
+    if (this.state.newAccount.type === '') {
+      alert('New account type cannot be null');
+      return undefined;
+    }
+    if (this.state.newAccount.name === '') {
+      alert('Account name cannot be null');
+      return undefined;
+    }
+
+    var newAccount = _.clone(this.state.newAccount);
+    newAccount.type = parseInt(newAccount.type);
+    newAccount.parent = (newAccount.parent === '') ? null : parseInt(newAccount.parent);
+    console.log('Creating new account');
+    console.log(newAccount)
+    this.props['add-handler'](newAccount, e);
+    this.setState({newAccount: {name: '', type: '', parent: ''}})
   }
   
   render() {
     // Want all of the accounts with no parent at the front
-    var accts = _.orderBy(this.props.accounts, ['parent', 'name'], ['desc', 'asc']);
+    var accts = _.orderBy(this.props.accounts, ['type', 'parent', 'name'], ['asc', 'desc', 'asc']);
     var byType = _.groupBy(accts, 'type');
     var byParent = _.groupBy(accts, 'parent');
     var selectHandler = this.props['select-handler'];
@@ -43,7 +88,7 @@ export default class AccountList extends React.Component{
       });
       return res;
     };
-    
+
     return (
       <div>
         <h5>Assets</h5>
@@ -56,6 +101,37 @@ export default class AccountList extends React.Component{
         {makeAccounts(byType[CONSTANTS.ACCT_TYPE.INCOME])}
         <h5>Expense</h5>
         {makeAccounts(byType[CONSTANTS.ACCT_TYPE.EXPENSE])}
+        <h5>Add an account</h5>
+        <input type="text" value={this.state.newAccount.name} placeholder="Name" onChange={this.updateName}></input>
+        Type
+        <select value={this.state.newAccount.type} onChange={this.updateType}>
+          <option value="">Account type</option>
+          {_.map(CONSTANTS.ACCT_TYPE, function(v, k) {
+            var text = _.capitalize(k);
+            return (
+              <option value={v.toString()} key={v}>
+                {text}
+              </option>
+            );
+          })}
+        </select>
+        Parent
+        <select value={this.state.newAccount.parent} onChange={this.updateParent}>
+          <option value="">Select parent</option>
+          {(() => { 
+            var self = this;
+            return _.map(accts, function(acct) {
+            // Only include accounts of the same type as the selected acount type
+            if (acct.type.toString() === self.state.newAccount.type) {
+              return (
+                <option value={acct.id.toString()} key={acct.id}>
+                  {acct.name}
+                </option>
+              )
+            }
+          })})()}
+        </select>
+        <button onClick={this.newAccount}>Add</button>
       </div>
     )
   }
