@@ -3,9 +3,9 @@ import React from 'react';
 import SplitRow from './SplitRow';
 
 
-class AccountDetail extends React.Component {
+export default class AccountDetail extends React.Component {
   render() {
-    var splits = _.sortBy(this.props.splits, 'timestamp');
+    var splits = _.sortBy(_.values(this.props.splits), 'timestamp');
     var runningTotal = 0;
     splits.forEach(function(s) {
       runningTotal += s.amount;
@@ -55,5 +55,3 @@ class AccountDetail extends React.Component {
     );
   }
 }
-
-export default AccountDetail;

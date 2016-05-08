@@ -3,7 +3,7 @@ import _ from 'lodash';
 import React from 'react';
 import Account from './Account';
 
-class AccountList extends React.Component{
+export default class AccountList extends React.Component{
   constructor(props) {
     super(props);
   }
@@ -15,8 +15,6 @@ class AccountList extends React.Component{
     var byParent = _.groupBy(accts, 'parent');
     var selectHandler = this.props['select-handler'];
     var removeHandler = this.props['remove-handler'];
-    console.log(accts);
-    console.log(byType);
 
     var makeAccount = function(acct, depth) {
       return (
@@ -30,13 +28,10 @@ class AccountList extends React.Component{
     };
     
     var makeAccounts = function(accts, seen, depth) {
-      /* Produces a list of accounts.  If it encounters a child tree, then it recurses at a greater depth
-      
-       */
       depth = depth || 0;
       seen = seen || new Set([]);
       var res = [];
-      accts.map(function(acct) {
+      _.mapValues(accts, function(acct) {
         if (!seen.has(acct.id)) {
           res.push(makeAccount(acct, depth));
           seen.add(acct.id);
@@ -68,5 +63,3 @@ class AccountList extends React.Component{
 AccountList.defaultProps = {
   depth: 0
 };
-
-export default AccountList;

@@ -1,6 +1,7 @@
 import React from 'react';
+import moment from 'moment';
 
-class SplitRow extends React.Component {
+export default class SplitRow extends React.Component {
   render() {
     var split = this.props.split;
     return (
@@ -25,4 +26,3 @@ class SplitRow extends React.Component {
   }
 }
 
-export default SplitRow;

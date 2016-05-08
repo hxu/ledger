@@ -1,4 +1,4 @@
-var CONSTANTS = {
+const CONSTANTS = {
   ACCT_TYPE: {
     ASSET: 1,
     LIABILITY: 2,

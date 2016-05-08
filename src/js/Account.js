@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Account extends React.Component{
+export default class Account extends React.Component{
   render() {
     return (
       <div>
@@ -12,5 +12,3 @@ class Account extends React.Component{
     );
   }
 };
-
-export default Account;

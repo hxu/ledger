@@ -28,10 +28,6 @@ function getSplitsForAccount(acctId, splits) {
     accts = new Set(acctId);
   }
 
-  console.log(acctId);
-  console.log('getting splits for accounts: ');
-  console.log(accts);
-
   var res = [];
   if (splits !== undefined) {
     res = _.filter(splits, function(t) {
@@ -41,20 +37,41 @@ function getSplitsForAccount(acctId, splits) {
   return res;
 }
 
-function removeAccount(acct, accts) {
-    var acctId;
-    if (_.isPlainObject(acct)) {
-      acctId = acct.id;
-    } else {
-      acctId = act;
-    }
-    
-    // FIXME: finish implementing this
+function removeAccount(acct, accts, splits) {
+  var acctId;
+  if (_.isPlainObject(acct)) {
+    acctId = acct.id;
+  } else {
+    acctId = acct;
   }
-  
+  // If the account has a parent, move all splits to that, otherwise, orphan the splits
+  var newAccount;
+  if (accts[acctId].parent !== null) {
+    newAccount = acct.parent;
+  } else {
+    newAccount = null;
+  }
+  var newSplits = _.mapValues(splits, function(s) {
+    if (s.account === acct.id) {
+      s.account = newAccount;
+    }
+    return s;
+  });
+  // Same with sub-accounts
+  var newAccts = {};
+  _.forOwn(accts, function(acct) {
+    if (acct.id !== acctId) {
+      if (acct.parent === acctId) {
+        acct.parent = newAccount;
+      }
+      newAccts[acct.id] = acct;
+    }
+  });
+  return [newAccts, newSplits];
+}
 
 
-class App extends React.Component{
+export default class App extends React.Component{
   constructor(props) {
     super(props);
     console.log('Data');
@@ -64,6 +81,7 @@ class App extends React.Component{
       data: Object.assign({}, data)
     };
     this.selectAccountHandler = this.selectAccountHandler.bind(this);
+    this.removeAccountHandler = this.removeAccountHandler.bind(this);
   }
   
   /* Try calculating on the fly each time
@@ -86,12 +104,12 @@ class App extends React.Component{
   */
   
   getAccountById(id) {
-    return _.find(this.state.data.accounts, {'id': id});
+    return this.state.data.accounts[id];
   }
   
  
   addAccount(acct) {
-    this.state.data.accounts.push(acct);
+    this.state.data.accounts[acct.id] = acct;
   }
   
 
@@ -103,15 +121,25 @@ class App extends React.Component{
   }
   
   removeAccountHandler(acct, e) {
+    console.log('removing');
+    console.log(acct);
     e.preventDefault();
+    var [accts, splits] = removeAccount(acct, this.state.data.accounts, this.state.data.splits);
+    this.setState({data: {accounts: accts, splits: splits}});
   }
 
   render() {
+    console.log('Current state: ');
+    console.log(this.state);
     return (
       <div>
         <div>Hello World</div>
         <div><pre>{JSON.stringify(this.state)}</pre></div>
-        <AccountList accounts={this.state.data.accounts} select-handler={this.selectAccountHandler} />
+        <AccountList
+          accounts={this.state.data.accounts}
+          select-handler={this.selectAccountHandler}
+          remove-handler={this.removeAccountHandler}
+        />
         {(() => {
           if (this.state.selectedAccount) {
             return <div>Selected account: {this.state.selectedAccount.id}</div>
@@ -127,5 +155,3 @@ class App extends React.Component{
     );
   }
 }
-
-export default App;

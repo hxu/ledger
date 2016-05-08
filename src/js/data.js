@@ -1,6 +1,7 @@
 import CONSTANTS from './constants';
+import _ from 'lodash';
 
-const data = {
+const data = _.mapValues({
   accounts: [
     {
       id: 1,
@@ -95,6 +96,8 @@ const data = {
     },
   ],
   prices: []
-};
+}, function(val) {
+  return _.keyBy(val, 'id');
+});
 
 export default data;
