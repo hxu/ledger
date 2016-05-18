@@ -13,27 +13,18 @@ export default class AccountList extends React.Component{
         parent: ''
       }
     };
-    this.updateName = this.updateName.bind(this);
-    this.updateType = this.updateType.bind(this);
-    this.updateParent = this.updateParent.bind(this);
+    this.updateNewAccount = this.updateNewAccount.bind(this);
     this.newAccount = this.newAccount.bind(this);
   }
+  
+  updateNewAccount(e, property) {
+    var base = {};
+    base[property] = e.target.value;
+    
+    var newState = _.assign(_.clone(this.state.newAccount), base);
+    this.setState({newAccount: newState});
+  }
 
-  updateName(e) {
-    var newState = _.assign(_.clone(this.state.newAccount), {name: e.target.value});
-    this.setState({newAccount: newState});
-  }
-  
-  updateType(e) {
-    var newState = _.assign(_.clone(this.state.newAccount), {type: e.target.value});
-    this.setState({newAccount: newState});
-  }
-  
-  updateParent(e) {
-    var newState = _.assign(_.clone(this.state.newAccount), {parent: e.target.value});
-    this.setState({newAccount: newState});
-  }
-  
   newAccount(e) {
     if (this.state.newAccount.type === '') {
       alert('New account type cannot be null');
@@ -102,9 +93,9 @@ export default class AccountList extends React.Component{
         <h5>Expense</h5>
         {makeAccounts(byType[CONSTANTS.ACCT_TYPE.EXPENSE])}
         <h5>Add an account</h5>
-        <input type="text" value={this.state.newAccount.name} placeholder="Name" onChange={this.updateName}></input>
+        <input type="text" value={this.state.newAccount.name} placeholder="Name" onChange={(e) => this.updateNewAccount(e, 'name')}></input>
         Type
-        <select value={this.state.newAccount.type} onChange={this.updateType}>
+        <select value={this.state.newAccount.type} onChange={(e) => this.updateNewAccount(e, 'type')}>
           <option value="">Account type</option>
           {_.map(CONSTANTS.ACCT_TYPE, function(v, k) {
             var text = _.capitalize(k);
@@ -116,7 +107,7 @@ export default class AccountList extends React.Component{
           })}
         </select>
         Parent
-        <select value={this.state.newAccount.parent} onChange={this.updateParent}>
+        <select value={this.state.newAccount.parent} onChange={(e) => this.updateNewAccount(e, 'parent')}>
           <option value="">Select parent</option>
           {(() => { 
             var self = this;

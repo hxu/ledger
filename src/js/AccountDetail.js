@@ -4,6 +4,27 @@ import SplitRow from './SplitRow';
 
 
 export default class AccountDetail extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      newSplit: {
+        date: '',
+        amount: '',
+        description: ''
+      }
+    };
+    
+    this.updateNewSplit = this.updateNewSplit.bind(this);
+  }
+
+  updateNewSplit(e, property) {
+    var base = {};
+    base[property] = e.target.value;
+    
+    var newState = _.assign(_.clone(this.state.newSplit), base);
+    this.setState({newSplit: newState});
+  }
+
   render() {
     var splits = _.sortBy(_.values(this.props.splits), 'timestamp');
     var runningTotal = 0;
@@ -48,6 +69,13 @@ export default class AccountDetail extends React.Component {
             {splits.map(function(s) {
               return <SplitRow split={s} key={s.id} />
             })}
+            <tr>
+              <td>*</td>
+              <td><input type="text" value={this.state.newSplit.date} onChange={(e) => this.updateNewSplit(e, 'date')} placeholder="date" /></td>
+              <td><input type="text" value={this.state.newSplit.description} onChange={(e) => this.updateNewSplit(e, 'description')} placeholder="description" /></td>
+              <td><input type="text" value={this.state.newSplit.amount} onChange={(e) => this.updateNewSplit(e, 'amount')} placeholder="amount" /></td>
+              <td><button>Add</button></td>
+            </tr>
             </tbody>
           </table>
         </div>
