@@ -50,7 +50,7 @@ export default class AccountList extends React.Component{
     console.log('Creating new account');
     console.log(newAccount)
     this.props['add-handler'](newAccount, e);
-    this.setState({newAccount: {name: '', type: '', parent: ''}})
+    this.setState({newAccount: {name: '', type: this.state.newAccount.type, parent: this.state.newAccount.parent}})
   }
   
   render() {
