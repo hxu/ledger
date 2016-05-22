@@ -24,6 +24,17 @@ export default class AccountDetail extends React.Component {
     var newState = _.assign(_.clone(this.state.newSplit), base);
     this.setState({newSplit: newState});
   }
+  
+  newSplit(e) {
+    // Validate the split
+    // Create a transaction for the split
+    // Create the opposite split
+  }
+  
+  removeSplit(e) {
+    // If the split's transaction is balanced and has only one other split, then we should remove that split
+    // as well.
+  }
 
   render() {
     var splits = _.sortBy(_.values(this.props.splits), 'timestamp');
