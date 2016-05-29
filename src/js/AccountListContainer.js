@@ -1,4 +1,4 @@
-import { addAccountAction } from './LedgerStore';
+import { addAccountAction, selectAccountAction } from './LedgerStore';
 import AccountList from './AccountList';
 import { connect } from 'react-redux';
 
@@ -13,6 +13,10 @@ const mapDispatchToProps = function(dispatch) {
   return {
     addHandler: (acct) => {
       dispatch(addAccountAction(acct));
+    },
+    selectHandler: (acct, e) => {
+      e.preventDefault();
+      dispatch(selectAccountAction(acct));
     }
   };
 };

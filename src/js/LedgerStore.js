@@ -18,7 +18,7 @@ export const SELECT_ACCOUNT = 'SELECT_ACCOUNT';
 export function selectAccountAction(acct) {
   return {
     type: SELECT_ACCOUNT,
-    acct: getAcctId(acct)
+    account: getAcctId(acct)
   };
 }
 
@@ -26,7 +26,7 @@ export const ADD_ACCOUNT = 'ADD_ACCOUNT';
 export function addAccountAction(acct) {
   return {
     type: ADD_ACCOUNT,
-    acct
+    account: acct
   };
 }
 
@@ -34,7 +34,7 @@ export const REMOVE_ACCOUNT = 'REMOVE_ACCOUNT';
 export function removeAccountAcount(acct) {
   return {
     type: REMOVE_ACCOUNT,
-    acct: getAcctId(acct)
+    account: getAcctId(acct)
   };
 }
 
@@ -42,7 +42,7 @@ export const UPDATE_ACCOUNT = 'UPDATE_ACCOUNT';
 export function updateAccountAction(newAcct) {
   return {
     type: UPDATE_ACCOUNT,
-    acct: newAcct
+    account: newAcct
   };
 }
 
@@ -67,7 +67,7 @@ function addAccount(acct, accts) {
 function accounts(state = initialState.accounts, action) {
   switch(action.type) {
     case ADD_ACCOUNT:
-      return addAccount(action.acct, state);
+      return addAccount(action.account, state);
     case REMOVE_ACCOUNT:
     case UPDATE_ACCOUNT:
     default:
@@ -76,7 +76,12 @@ function accounts(state = initialState.accounts, action) {
 }
 
 function selectedAccount(state = initialState.selectedAccount, action) {
-  return state;
+  switch(action.type) {
+    case SELECT_ACCOUNT:
+      return action.account;
+    default:
+      return state;
+  }
 }
 
 function splits(state = initialState.splits, action) {

@@ -7,6 +7,7 @@ import moment from 'moment';
 import AccountList from './AccountList';
 import AccountListContainer from './AccountListContainer';
 import AccountDetail from './AccountDetail';
+import { connect } from 'react-redux';
 
 
 function getChildrenForAccount(acct, accts) {
@@ -70,64 +71,14 @@ function removeAccount(acct, accts, splits) {
   return [newAccts, newSplits];
 }
 
-function addAccount(acct, accts) {
-  var maxId = parseInt(_.maxBy(_.keys(accts), parseInt));
-  var newAccount = _.clone(acct);
-  newAccount.id = maxId + 1;
-  accts[newAccount.id] = newAccount;
-  return accts;
-}
-
-
-export default class App extends React.Component{
+class _App extends React.Component{
   constructor(props) {
     super(props);
     console.log('Data');
     console.log(data);
     this.state = {
-      selectedAccount: null,
-      accounts: data.accounts,
-      splits: data.splits,
-      transactions: data.transactions,
-      prices: data.prices,
     };
-    this.selectAccountHandler = this.selectAccountHandler.bind(this);
     this.removeAccountHandler = this.removeAccountHandler.bind(this);
-    this.addAccountHandler = this.addAccountHandler.bind(this);
-  }
-  
-  /* Try calculating on the fly each time
-  loadAccounts(accounts) {
-    var data = {
-      accounts,
-      children: _.groupBy(accounts, 'parent'),
-      byId: _.keyBy(accounts, 'id')
-    };
-    
-    // Replace id reference to parent with the actual object reference
-    accounts.forEach(function(acct) {
-      if (!_.isNil(acct.parent)) {
-        acct.parent = data.byId[acct.parent];
-      }
-    });
-    
-    return data;
-  }
-  */
-  
-
-  addAccountHandler(acct, e) {
-    e.preventDefault();
-    var accts = addAccount(acct, this.state.accounts);
-    this.setState({accounts: accts});
-  }
-  
-
-  selectAccountHandler(acct, e) {
-    console.log('selecting');
-    console.log(acct);
-    e.preventDefault();
-    this.setState({selectedAccount: acct});
   }
   
   removeAccountHandler(acct, e) {
@@ -139,23 +90,21 @@ export default class App extends React.Component{
   }
 
   render() {
-    console.log('Current state: ');
-    console.log(this.state);
     return (
       <div>
-        <div>Hello World</div>
         <div><pre>{JSON.stringify(this.state)}</pre></div>
         <AccountListContainer />
 
         {(() => {
-          if (this.state.selectedAccount) {
-            return <div>Selected account: {this.state.selectedAccount.id}</div>
+          if (this.props.selectedAccount) {
+            return <div>Selected account: {this.props.selectedAccount.id}</div>
           }
         })()}
+        
         {(() => {
-          if (this.state.selectedAccount) {
-            var childAccts = getChildrenForAccount(this.state.selectedAccount.id, this.state.accounts);
-            return <AccountDetail account={this.state.selectedAccount} splits={getSplitsForAccount(_.concat(childAccts, this.state.selectedAccount.id), this.state.splits)} />
+          if (this.props.selectedAccount) {
+            var childAccts = getChildrenForAccount(this.props.selectedAccount.id, this.state.accounts);
+            return <AccountDetail account={this.props.selectedAccount} splits={getSplitsForAccount(_.concat(childAccts, this.props.selectedAccount.id), this.state.splits)} />
           }
         })()}
       </div>
@@ -163,11 +112,15 @@ export default class App extends React.Component{
   }
 }
 
-/*
- <AccountList
- accounts={this.state.accounts}
- select-handler={this.selectAccountHandler}
- remove-handler={this.removeAccountHandler}
- add-handler={this.addAccountHandler}
- />
- */
+const mapStateToProps = function(state) {
+  return {
+    selectedAccount: state.selectedAccount
+  }
+};
+
+const mapDispatchToProps = function(dispatch) {
+  return {};
+};
+
+const App = connect(mapStateToProps, mapDispatchToProps)(_App);
+export default App;
