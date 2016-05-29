@@ -31,7 +31,7 @@ export function addAccountAction(acct) {
 }
 
 export const REMOVE_ACCOUNT = 'REMOVE_ACCOUNT';
-export function removeAccountAcount(acct) {
+export function removeAccountAction(acct) {
   return {
     type: REMOVE_ACCOUNT,
     account: getAcctId(acct)
@@ -64,11 +64,51 @@ function addAccount(acct, accts) {
   return accts;
 }
 
+function changeSplitsAccount(fromAccount, toAccount, splits) {
+  var newSplits = _.mapValues(splits, function(split) {
+    if (split.account === fromAccount) {
+      var newSplit = _.clone(split);
+      newSplit.account = toAccount;
+      return newSplit;
+    } else {
+      return split;
+    }
+  });
+  return newSplits;
+}
+
+function changeParentAccount(fromAccount, toAccount, accounts) {
+  var newAccts = {};
+  _.forOwn(accounts, function(acct) {
+    if (acct.parent === fromAccount) {
+      var newAcct = _.clone(acct);
+      newAcct.parent = toAccount;
+    }
+    newAccts[acct.id] = newAcct;
+  });
+  return newAccts;
+}
+
+function getParentAccount(accountId, accounts) {
+  /* Gets the parent account id, or returns null if there is none
+   */
+  var parent = accounts[accountId].parent;
+  if (_.isNil(parent)) {
+    return null;
+  } else {
+    return parent;
+  }
+}
+
 function accounts(state = initialState.accounts, action) {
   switch(action.type) {
     case ADD_ACCOUNT:
       return addAccount(action.account, state);
     case REMOVE_ACCOUNT:
+      let parent = getParentAccount(action.account, state);
+      let newState = changeParentAccount(action.account, parent, state);
+      delete newState[action.account];
+      return newState;
     case UPDATE_ACCOUNT:
     default:
       return state;
@@ -84,8 +124,15 @@ function selectedAccount(state = initialState.selectedAccount, action) {
   }
 }
 
+// FIXME: this doesn't work because the state is just the splits section of the state
 function splits(state = initialState.splits, action) {
-  return state;
+  switch(action.type) {
+    case REMOVE_ACCOUNT:
+      var parent = getParentAccount(action.account, state.accounts);
+      return changeSplitsAccount(action.account, parent, state.splits);
+    default:
+      return state;
+  }
 }
 
 function transactions(state = initialState.splits, action) {
@@ -103,3 +150,15 @@ export const ledgerApp = combineReducers({
   transactions,
   prices
 });
+
+
+const logger = store => next => action => {
+  console.log('dispatching', action)
+  let result = next(action)
+  console.log('next state', store.getState())
+  return result
+};
+
+
+export let ledgerStore = createStore(ledgerApp, initialState, applyMiddleware(logger));
+

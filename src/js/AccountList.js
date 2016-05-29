@@ -52,7 +52,7 @@ export default class AccountList extends React.Component{
     var accts = _.orderBy(this.props.accounts, ['type', 'parent', 'name'], ['asc', 'desc', 'asc']);
     var byType = _.groupBy(accts, 'type');
     var byParent = _.groupBy(accts, 'parent');
-    var removeHandler = this.props['remove-handler'];
+    var removeHandler = this.props['removeHandler'];
     var selectHandler = this.props['selectHandler'];
 
     var makeAccount = function(acct, depth) {

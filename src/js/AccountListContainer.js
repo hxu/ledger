@@ -1,4 +1,4 @@
-import { addAccountAction, selectAccountAction } from './LedgerStore';
+import { addAccountAction, selectAccountAction, removeAccountAction } from './LedgerStore';
 import AccountList from './AccountList';
 import { connect } from 'react-redux';
 
@@ -17,6 +17,10 @@ const mapDispatchToProps = function(dispatch) {
     selectHandler: (acct, e) => {
       e.preventDefault();
       dispatch(selectAccountAction(acct));
+    },
+    removeHandler: (acct, e) => {
+      e.preventDefault();
+      dispatch(removeAccountAction(acct));
     }
   };
 };

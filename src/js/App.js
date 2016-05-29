@@ -38,39 +38,6 @@ function getSplitsForAccount(acctId, splits) {
   return res;
 }
 
-function removeAccount(acct, accts, splits) {
-  var acctId;
-  if (_.isPlainObject(acct)) {
-    acctId = acct.id;
-  } else {
-    acctId = acct;
-  }
-  // If the account has a parent, move all splits to that, otherwise, orphan the splits
-  var newAccount;
-  if (accts[acctId].parent !== null) {
-    newAccount = acct.parent;
-  } else {
-    newAccount = null;
-  }
-  var newSplits = _.mapValues(splits, function(s) {
-    if (s.account === acct.id) {
-      s.account = newAccount;
-    }
-    return s;
-  });
-  // Same with sub-accounts
-  var newAccts = {};
-  _.forOwn(accts, function(acct) {
-    if (acct.id !== acctId) {
-      if (acct.parent === acctId) {
-        acct.parent = newAccount;
-      }
-      newAccts[acct.id] = acct;
-    }
-  });
-  return [newAccts, newSplits];
-}
-
 class _App extends React.Component{
   constructor(props) {
     super(props);
