@@ -5,6 +5,7 @@ import Account from './Account';
 import _ from 'lodash';
 import moment from 'moment';
 import AccountList from './AccountList';
+import AccountListContainer from './AccountListContainer';
 import AccountDetail from './AccountDetail';
 
 
@@ -144,12 +145,8 @@ export default class App extends React.Component{
       <div>
         <div>Hello World</div>
         <div><pre>{JSON.stringify(this.state)}</pre></div>
-        <AccountList
-          accounts={this.state.accounts}
-          select-handler={this.selectAccountHandler}
-          remove-handler={this.removeAccountHandler}
-          add-handler={this.addAccountHandler}
-        />
+        <AccountListContainer />
+
         {(() => {
           if (this.state.selectedAccount) {
             return <div>Selected account: {this.state.selectedAccount.id}</div>
@@ -165,3 +162,12 @@ export default class App extends React.Component{
     );
   }
 }
+
+/*
+ <AccountList
+ accounts={this.state.accounts}
+ select-handler={this.selectAccountHandler}
+ remove-handler={this.removeAccountHandler}
+ add-handler={this.addAccountHandler}
+ />
+ */

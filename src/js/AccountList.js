@@ -3,9 +3,12 @@ import _ from 'lodash';
 import React from 'react';
 import Account from './Account';
 
+
 export default class AccountList extends React.Component{
   constructor(props) {
     super(props);
+    console.log('Account list');
+    console.log(props);
     this.state = {
       newAccount: {
         name: '',
@@ -40,7 +43,7 @@ export default class AccountList extends React.Component{
     newAccount.parent = (newAccount.parent === '') ? null : parseInt(newAccount.parent);
     console.log('Creating new account');
     console.log(newAccount)
-    this.props['add-handler'](newAccount, e);
+    this.props['addHandler'](newAccount, e);
     this.setState({newAccount: {name: '', type: this.state.newAccount.type, parent: this.state.newAccount.parent}})
   }
   
@@ -127,6 +130,7 @@ export default class AccountList extends React.Component{
     )
   }
 }
+
 AccountList.defaultProps = {
   depth: 0
 };
