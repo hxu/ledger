@@ -163,6 +163,36 @@ function prices(state = initialState.splits, action) {
   return state;
 }
 
+/* Utilities */
+export function getChildrenForAccount(acct, accts) {
+  if (_.isNumber(acct) || _.isNil(acct)) {
+    // Return like for like
+    return _.filter(accts, {'parent': acct}).map(function(a) { return a.id; });
+  } else if (_.isPlainObject(acct)) {
+    return _.filter(accts, {'parent': acct.id});
+  } else {
+    throw new Exception('Can only find children accounts for an account ID or account object');
+  }
+}
+
+export function getSplitsForAccount(acctId, splits) {
+  var accts;
+  if (_.isNumber(acctId)) {
+    accts = new Set([acctId]);
+  } else {
+    accts = new Set(acctId);
+  }
+
+  var res = [];
+  if (splits !== undefined) {
+    res = _.filter(splits, function(t) {
+      return accts.has(t.account);
+    });
+  }
+  return res;
+}
+
+/* Combined reducers and store */
 export const ledgerApp = function(state, action) {
   var reducers = [
     combineReducers({

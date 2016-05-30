@@ -1,42 +1,10 @@
 import React from 'react';
 import data from './data';
-import CONSTANTS from './constants';
-import Account from './Account';
 import _ from 'lodash';
-import moment from 'moment';
-import AccountList from './AccountList';
 import AccountListContainer from './AccountListContainer';
 import AccountDetail from './AccountDetail';
 import { connect } from 'react-redux';
 
-
-function getChildrenForAccount(acct, accts) {
-  if (_.isNumber(acct) || _.isNil(acct)) {
-    // Return like for like
-    return _.filter(accts, {'parent': acct}).map(function(a) { return a.id; });
-  } else if (_.isPlainObject(acct)) {
-    return _.filter(accts, {'parent': acct.id});
-  } else {
-    throw new Exception('Can only find children accounts for an account ID or account object');
-  }
-}
-
-function getSplitsForAccount(acctId, splits) {
-  var accts;
-  if (_.isNumber(acctId)) {
-    accts = new Set([acctId]);
-  } else {
-    accts = new Set(acctId);
-  }
-
-  var res = [];
-  if (splits !== undefined) {
-    res = _.filter(splits, function(t) {
-      return accts.has(t.account);
-    });
-  }
-  return res;
-}
 
 class _App extends React.Component{
   constructor(props) {
@@ -69,8 +37,7 @@ class _App extends React.Component{
         
         {(() => {
           if (this.props.selectedAccount) {
-            var childAccts = getChildrenForAccount(this.props.selectedAccount.id, this.state.accounts);
-            return <AccountDetail account={this.props.selectedAccount} splits={getSplitsForAccount(_.concat(childAccts, this.props.selectedAccount.id), this.state.splits)} />
+            return <AccountDetail account={this.props.selectedAccount} />
           }
         })()}
       </div>

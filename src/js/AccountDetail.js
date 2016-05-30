@@ -1,9 +1,11 @@
 import _ from 'lodash';
 import React from 'react';
 import SplitRow from './SplitRow';
+import { connect } from 'react-redux';
+import { getChildrenForAccount, getSplitsForAccount } from './LedgerStore';
 
 
-export default class AccountDetail extends React.Component {
+class _AccountDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -94,3 +96,19 @@ export default class AccountDetail extends React.Component {
     );
   }
 }
+
+const mapStateToProps = function(state, ownProps) {
+  var selectedAcctId = ownProps.account;
+  var childAccounts = getChildrenForAccount(selectedAcctId, state.accounts);
+  return {
+    splits: getSplitsForAccount(_.concat(childAccounts, selectedAcctId), state.splits)
+  }
+};
+
+const mapDispatchToProps = function(dispatch, ownProps) {
+  return {}
+};
+
+const AccountDetail = connect(mapStateToProps, mapDispatchToProps)(_AccountDetail);
+
+export default AccountDetail;
