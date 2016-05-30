@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
 import data from './data';
 import _ from "lodash";
 
@@ -83,10 +83,39 @@ function changeParentAccount(fromAccount, toAccount, accounts) {
     if (acct.parent === fromAccount) {
       var newAcct = _.clone(acct);
       newAcct.parent = toAccount;
+      newAccts[newAcct.id] = newAcct;
+    } else {
+      newAccts[acct.id] = acct;
     }
-    newAccts[acct.id] = newAcct;
   });
   return newAccts;
+}
+
+function removeAccount(state = initialState, action) {
+  /* Reducer for removing accounts.
+   We need the whole state because we need to change the parent account of
+   splits that belong to the account being removed
+   */
+  if (action.type == REMOVE_ACCOUNT) {
+    var oldId = action.account;
+    var newId = getParentAccount(oldId, state.accounts);
+    
+    var newAccounts = changeParentAccount(oldId, newId, state.accounts);
+    delete newAccounts[oldId];
+    
+    var newSplits = changeSplitsAccount(oldId, newId, state.splits);
+    // If the account that we're removing is selected, deselect it
+    var newSelection = (state.selectedAccount === oldId) ? null : state.selectedAccount;
+    
+    var newState = Object.assign({}, state, {
+      accounts: newAccounts,
+      splits: newSplits,
+      selectedAccount: newSelection
+    });
+    return newState;
+  } else {
+    return state;
+  }
 }
 
 function getParentAccount(accountId, accounts) {
@@ -104,11 +133,6 @@ function accounts(state = initialState.accounts, action) {
   switch(action.type) {
     case ADD_ACCOUNT:
       return addAccount(action.account, state);
-    case REMOVE_ACCOUNT:
-      let parent = getParentAccount(action.account, state);
-      let newState = changeParentAccount(action.account, parent, state);
-      delete newState[action.account];
-      return newState;
     case UPDATE_ACCOUNT:
     default:
       return state;
@@ -124,12 +148,8 @@ function selectedAccount(state = initialState.selectedAccount, action) {
   }
 }
 
-// FIXME: this doesn't work because the state is just the splits section of the state
 function splits(state = initialState.splits, action) {
   switch(action.type) {
-    case REMOVE_ACCOUNT:
-      var parent = getParentAccount(action.account, state.accounts);
-      return changeSplitsAccount(action.account, parent, state.splits);
     default:
       return state;
   }
@@ -143,13 +163,20 @@ function prices(state = initialState.splits, action) {
   return state;
 }
 
-export const ledgerApp = combineReducers({
-  selectedAccount,
-  accounts,
-  splits,
-  transactions,
-  prices
-});
+export const ledgerApp = function(state, action) {
+  var reducers = [
+    combineReducers({
+      selectedAccount,
+      accounts,
+      splits,
+      transactions,
+      prices
+    }),
+    removeAccount
+  ];
+
+  return reducers.reduce((s, reducer) => reducer(s, action), state);
+};
 
 
 const logger = store => next => action => {

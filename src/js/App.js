@@ -59,7 +59,6 @@ class _App extends React.Component{
   render() {
     return (
       <div>
-        <div><pre>{JSON.stringify(this.state)}</pre></div>
         <AccountListContainer />
 
         {(() => {
