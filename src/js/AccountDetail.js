@@ -3,6 +3,8 @@ import React from 'react';
 import SplitRow from './SplitRow';
 import { connect } from 'react-redux';
 import { getChildrenForAccount, getSplitsForAccount } from './LedgerStore';
+import DatePicker from 'material-ui/DatePicker';
+import moment from 'moment';
 
 
 class _AccountDetail extends React.Component {
@@ -10,9 +12,10 @@ class _AccountDetail extends React.Component {
     super(props);
     this.state = {
       newSplit: {
-        date: '',
+        date: null,
         amount: '',
-        description: ''
+        description: '',
+        transfer: '',
       }
     };
     
@@ -20,8 +23,9 @@ class _AccountDetail extends React.Component {
   }
 
   updateNewSplit(e, property) {
+    console.log('foo');
     var base = {};
-    base[property] = e.target.value;
+    base[property] = (_.isNil(e.target)) ? e : e.target.value;
     
     var newState = _.assign(_.clone(this.state.newSplit), base);
     this.setState({newSplit: newState});
@@ -87,8 +91,27 @@ class _AccountDetail extends React.Component {
             })}
             <tr>
               <td>*</td>
-              <td><input type="text" value={this.state.newSplit.date} onChange={(e) => this.updateNewSplit(e, 'date')} placeholder="date" /></td>
+              <td>
+                <DatePicker id="newSplitDate"
+                            container="inline"
+                            value={this.state.newSplit.date}
+                            onChange={(e, date) => this.updateNewSplit(date, 'date')} />
+              </td>
               <td><input type="text" value={this.state.newSplit.description} onChange={(e) => this.updateNewSplit(e, 'description')} placeholder="description" /></td>
+              <td>
+                <select value={this.state.newSplit.transfer} onChange={(e) => this.updateNewSplit(e, 'transfer')}>
+                  <option value=""></option>
+                  {(() => {
+                    return _.map(this.props.accounts, function(acct) {
+                      return (
+                        <option value={acct.id.toString()} key={acct.id}>
+                          {acct.name}
+                        </option>
+                      )
+                    })
+                  })()}
+                </select>
+              </td>
               <td><input type="text" value={this.state.newSplit.amount} onChange={(e) => this.updateNewSplit(e, 'amount')} placeholder="amount" /></td>
               <td><button>Add</button></td>
             </tr>
@@ -100,10 +123,12 @@ class _AccountDetail extends React.Component {
   }
 }
 
+
 const mapStateToProps = function(state, ownProps) {
   var selectedAcctId = ownProps.account;
   var childAccounts = getChildrenForAccount(selectedAcctId, state.accounts);
   return {
+    accounts: state.accounts,
     splits: getSplitsForAccount(_.concat(childAccounts, selectedAcctId), state.splits)
   }
 };
