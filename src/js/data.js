@@ -69,6 +69,11 @@ const data = _.mapValues({
       id: 1,
       splits: [1, 2, 3],
       description: "Monthly salary"
+    },
+    {
+      id: 2,
+      splits: [4, 5],
+      description: 'Misc expenses'
     }
   ],
   splits: [
@@ -94,6 +99,20 @@ const data = _.mapValues({
       transaction: 1,
       description: 'Tax withholding'
     },
+    {
+      id: 4,
+      account: 6,
+      amount: 250,
+      timestamp: Date.UTC(2016, 6, 12),
+      transaction: 2
+    },
+    {
+      id: 5,
+      account: 9,
+      amount: 250,
+      timestamp: Date.UTC(2016, 6, 12),
+      transaction: 2
+    }
   ],
   prices: []
 }, function(val) {

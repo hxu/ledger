@@ -31,7 +31,7 @@ class _App extends React.Component{
 
         {(() => {
           if (this.props.selectedAccount) {
-            return <div>Selected account: {this.props.selectedAccount.id}</div>
+            return <div>Selected account: {this.props.selectedAccount}</div>
           }
         })()}
         

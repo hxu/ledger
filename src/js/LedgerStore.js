@@ -192,6 +192,38 @@ export function getSplitsForAccount(acctId, splits) {
   return res;
 }
 
+export function getDescriptionForSplit(split, transactions) {
+  // If the split has a description, use that
+  // If it doesn't, look for the description on the associated transaction
+  if (!_.isNil(split.description)) {
+    return split.description;
+  } else {
+    var transaction = transactions[split.transaction];
+    if (!_.isNil(transaction)) {
+      return transaction.description;
+    }
+  }
+  return null;
+}
+
+export function getTransferAccountForSplit(split, transactions, splits) {
+  // Gets the opposite account that the transaction this split belongs to affects
+  // Look at the associated transaction
+  // If there is only one other account, then use that account
+  // If there is more than one account, then indicate that it is a split transaction
+  var transactionId = split.transaction;
+  var transaction = transactions[transactionId];
+  if (transaction.splits.length <= 2) {
+    var otherSplits = _.without(transaction.splits, split.id);
+    if (otherSplits.length > 0) {
+      var otherSplit = splits[otherSplits[0]];
+      return otherSplit.account;
+    }
+  } else {
+    return -1;
+  }
+}
+
 /* Combined reducers and store */
 export const ledgerApp = function(state, action) {
   var reducers = [
