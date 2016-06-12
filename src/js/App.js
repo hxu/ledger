@@ -40,6 +40,12 @@ class _App extends React.Component{
             return <AccountDetail account={this.props.selectedAccount} />
           }
         })()}
+
+        {(() => {
+          if (this.props.selectedTransaction) {
+            return <TransactionDetail transaction={this.props.selectedTransaction} />
+          }
+        })}
       </div>
     );
   }
@@ -47,7 +53,8 @@ class _App extends React.Component{
 
 const mapStateToProps = function(state) {
   return {
-    selectedAccount: state.selectedAccount
+    selectedAccount: state.selectedAccount,
+    selectedTransaction: state.selectedTransaction
   }
 };
 

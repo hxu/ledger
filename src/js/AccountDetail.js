@@ -100,7 +100,6 @@ class _AccountDetail extends React.Component {
   }
 }
 
-// TODO: also pass in the transactions, so that we can render the links to each split's opposite account
 const mapStateToProps = function(state, ownProps) {
   var selectedAcctId = ownProps.account;
   var childAccounts = getChildrenForAccount(selectedAcctId, state.accounts);
@@ -110,7 +109,8 @@ const mapStateToProps = function(state, ownProps) {
 };
 
 const mapDispatchToProps = function(dispatch, ownProps) {
-  return {}
+  return {
+  }
 };
 
 const AccountDetail = connect(mapStateToProps, mapDispatchToProps)(_AccountDetail);

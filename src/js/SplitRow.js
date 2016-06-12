@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { getDescriptionForSplit, getTransferAccountForSplit } from './LedgerStore';
+import { getDescriptionForSplit, getTransferAccountForSplit, selectTransactionAction } from './LedgerStore';
 
 export default class _SplitRow extends React.Component {
   render() {
@@ -18,7 +18,7 @@ export default class _SplitRow extends React.Component {
           {this.props.description}
         </td>
         <td>
-          {this.props.transfer}
+          <a href onClick={(e) => { this.props['selectTransaction'](split.transaction, e); }}>{this.props.transferName}</a>
         </td>
         <td>
           {split.amount}
@@ -35,12 +35,17 @@ const mapStateToProps = function(state, ownProps) {
   var transfer = getTransferAccountForSplit(ownProps.split, state.transactions, state.splits);
   return {
     description: getDescriptionForSplit(ownProps.split, state.transactions),
-    transfer: (transfer === -1) ? '--- Split Transaction ---' : state.accounts[transfer].name
+    transferName: (transfer === -1) ? '--- Split Transaction ---' : state.accounts[transfer].name
   };
 };
 
 const mapDispatchToProps = function(dispatch, ownProps) {
-  return {}
+  return {
+    selectTransaction: (transaction, e) => {
+      e.preventDefault();
+      dispatch(selectTransactionAction(transaction));
+    }
+  }
 };
 
 const SplitRow = connect(mapStateToProps, mapDispatchToProps)(_SplitRow);

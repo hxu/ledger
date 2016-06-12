@@ -4,7 +4,7 @@ import _ from "lodash";
 
 /* Actions */
 
-const getAcctId = function(acct) {
+const getObjectId = function(acct) {
   var acctId;
   if (_.isPlainObject(acct)) {
     acctId = acct.id;
@@ -18,8 +18,16 @@ export const SELECT_ACCOUNT = 'SELECT_ACCOUNT';
 export function selectAccountAction(acct) {
   return {
     type: SELECT_ACCOUNT,
-    account: getAcctId(acct)
+    account: getObjectId(acct)
   };
+}
+
+export const SELECT_TRANSACTION = 'SELECT_TRANSACTION';
+export function selectTransactionAction(transaction) {
+  return {
+    type: SELECT_TRANSACTION,
+    transaction: getObjectId(transaction)
+  }
 }
 
 export const ADD_ACCOUNT = 'ADD_ACCOUNT';
@@ -34,7 +42,7 @@ export const REMOVE_ACCOUNT = 'REMOVE_ACCOUNT';
 export function removeAccountAction(acct) {
   return {
     type: REMOVE_ACCOUNT,
-    account: getAcctId(acct)
+    account: getObjectId(acct)
   };
 }
 
@@ -50,6 +58,7 @@ export function updateAccountAction(newAcct) {
 
 export const initialState = {
   selectedAccount: null,
+  selectedTransaction: null,
   accounts: data.accounts,
   splits: data.splits,
   transactions: data.transactions,
@@ -148,6 +157,15 @@ function selectedAccount(state = initialState.selectedAccount, action) {
   }
 }
 
+function selectedTransaction(state = initialState.selectedTransaction, action) {
+  switch(action.type) {
+    case SELECT_TRANSACTION:
+      return action.transaction;
+    default:
+      return state;
+  }
+}
+
 function splits(state = initialState.splits, action) {
   switch(action.type) {
     default:
@@ -229,6 +247,7 @@ export const ledgerApp = function(state, action) {
   var reducers = [
     combineReducers({
       selectedAccount,
+      selectedTransaction,
       accounts,
       splits,
       transactions,
