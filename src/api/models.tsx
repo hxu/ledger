@@ -1,17 +1,23 @@
 export interface IAccount {
-    id: number;
+    id: string;
     type: AccountType;
     name: string;
-    currency: Currency;
+    currency: ICurrency;
     parent?: IAccount;
     tags: string[];
     transactions: ITransaction[];
 }
 
-export enum Currency {
-    USD,
-    GBP,
-    SGD
+export interface IAccountCreateRequest {
+    type: AccountType;
+    name: string;
+    currency: ICurrency;
+    parent?: IAccount;
+    tags?: string[];
+}
+
+export interface ICurrency {
+    code: string;
 }
 
 export enum AccountType {
@@ -23,17 +29,17 @@ export enum AccountType {
 }
 
 export interface ITransaction {
-    id: number;
+    id: string;
     date: number;
     description: string;
     notes: string;
     credit: number;
     debit: number;
-    currency: Currency;
+    currency: ICurrency;
     account: IAccount;
 }
 
 export interface ISplit {
-    id: number;
+    id: string;
     transactions: ITransaction[];
 }
