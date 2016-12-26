@@ -1,5 +1,6 @@
 import * as React from "react";
 import {LedgerStore} from "../api/LedgerStore";
+import AccountList from "./AccountList";
 
 export class LedgerApp extends React.Component<undefined, undefined> {
     store: LedgerStore;
@@ -14,6 +15,7 @@ export class LedgerApp extends React.Component<undefined, undefined> {
         return (
             <div>
                 <h1>Hello</h1>
+                <AccountList />
             </div>
         )
     }
