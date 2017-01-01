@@ -1,4 +1,6 @@
 import {IAccount, ITransaction, ISplit, ICurrency, IAccountCreateRequest} from "./models";
+import {Store, createStore, Reducer} from "redux";
+import {data} from "./data";
 
 
 export interface IAccountMap {
@@ -21,9 +23,9 @@ export interface ILedgerStore {
     currencies: ICurrencyMap;
 }
 
-export const intialLedgerStoreState: ILedgerStore = {
+const intialLedgerStoreState: ILedgerStore = {
     selectedAccount: null,
-    accounts: {} as IAccountMap,
+    accounts: data.accounts,
     transactions: {} as ITransactionMap,
     splits: {} as ISplitMap,
     currencies: {} as ICurrencyMap
@@ -74,3 +76,5 @@ export function selectAccountHandler(state: ILedgerStore, action: IAction<any>):
 
     return state;
 }
+
+export let LedgerStore: Store<ILedgerStore> = createStore(selectAccountHandler, intialLedgerStoreState);

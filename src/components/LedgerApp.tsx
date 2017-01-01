@@ -1,5 +1,5 @@
 import * as React from "react";
-import AccountList from "./AccountList";
+import {AccountList} from "./AccountList";
 
 export class LedgerApp extends React.Component<undefined, undefined> {
 

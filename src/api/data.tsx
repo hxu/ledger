@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import {AccountType, ICurrency, ITransaction} from "./models";
 import {ICurrencyMap, IAccountMap} from "./LedgerStore";
 
