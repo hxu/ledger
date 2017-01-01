@@ -3,7 +3,7 @@ export interface IAccount {
     type: AccountType;
     name: string;
     currency: ICurrency;
-    parent?: IAccount;
+    parent?: string;
     tags: string[];
     transactions: ITransaction[];
 }
@@ -12,7 +12,7 @@ export interface IAccountCreateRequest {
     type: AccountType;
     name: string;
     currency: ICurrency;
-    parent?: IAccount;
+    parent?: string;
     tags?: string[];
 }
 

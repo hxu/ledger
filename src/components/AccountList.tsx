@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as _ from "lodash";
 import {IAccount, AccountType} from "../api/models";
-import {LedgerStore} from "../api/LedgerStore";
 import AccountListItem from "./AccountListItem";
 
 
@@ -21,7 +20,6 @@ export default class AccountList extends React.Component<AccountListProps, Accou
     }
 
     componentDidMount() {
-        this.setState({accounts: LedgerStore.getAccounts()});
     }
 
     makeAccount(account: IAccount, depth: number): JSX.Element {

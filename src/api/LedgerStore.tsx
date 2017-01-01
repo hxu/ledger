@@ -1,37 +1,76 @@
 import {IAccount, ITransaction, ISplit, ICurrency, IAccountCreateRequest} from "./models";
-import * as _ from "lodash";
 
 
-export class LedgerStore {
-    accounts: {string: IAccount};
-    transactions: {string: ITransaction};
-    splits: {string: ISplit};
-    currencies: {string: ICurrency};
+export interface IAccountMap {
+    [key: string]: IAccount
+}
+export interface ITransactionMap {
+    [key: string]: ITransaction
+}
+export interface ISplitMap {
+    [key: string]: ISplit
+}
+export interface ICurrencyMap {
+    [key: string]: ICurrency
+}
+export interface ILedgerStore {
+    selectedAccount: string;
+    accounts: IAccountMap;
+    transactions: ITransactionMap;
+    splits: ISplitMap;
+    currencies: ICurrencyMap;
+}
 
-    static _store: LedgerStore;
+export const intialLedgerStoreState: ILedgerStore = {
+    selectedAccount: null,
+    accounts: {} as IAccountMap,
+    transactions: {} as ITransactionMap,
+    splits: {} as ISplitMap,
+    currencies: {} as ICurrencyMap
+};
 
-    constructor() {
-        this.accounts = {} as {string: IAccount};
-        this.transactions = {} as {string: ITransaction};
-        this.splits = {} as {string: ISplit};
-        this.currencies = {} as {string: ICurrency};
+export interface IAction<P> {
+    type: string;
+    payload: P;
+    error?: boolean;
+    meta?: any;
+}
+
+export const SELECT_ACCOUNT = 'SELECT_ACCOUNT';
+export interface SELECT_ACCOUNT {
+    account: IAccount
+}
+export function selectAccountAction(acct: IAccount): IAction<SELECT_ACCOUNT> {
+    return {
+        type: SELECT_ACCOUNT,
+        payload: {account: acct}
+    };
+}
+
+export const DESELECT_ACCOUNT = 'DESELECT_ACCOUNT';
+export interface DESELECT_ACCOUNT {}
+export function deselectAccountAction(): IAction<DESELECT_ACCOUNT> {
+    return {
+        type: DESELECT_ACCOUNT,
+        payload: {}
+    };
+}
+
+export function isAction<P>(action: IAction<any>, type: string): action is IAction<P> {
+    return action.type == type;
+}
+
+export function selectAccountHandler(state: ILedgerStore, action: IAction<any>): ILedgerStore {
+    if (isAction<SELECT_ACCOUNT>(action, SELECT_ACCOUNT)) {
+        return Object.assign({}, state, {
+            selectedAccount: action.payload.account.id
+        });
+    }
+    if (isAction<DESELECT_ACCOUNT>(action, DESELECT_ACCOUNT)) {
+        return Object.assign({}, state, {
+            selectedAccount: null
+        });
     }
 
-    static getStore(): LedgerStore {
-        if (_.isNull(LedgerStore._store)) {
-            LedgerStore._store = new LedgerStore();
-        }
-        return this._store;
-    }
-
-    static getAccounts(): {string: IAccount} {
-        return this._store.accounts;
-    }
-
-    static createAccount(request: IAccountCreateRequest): IAccount {
-        return null;
-    }
-
-    static removeAccount(accountId: string): void {
-    }
+    return state;
 }
