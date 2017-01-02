@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import {AccountType, ICurrency, ITransaction} from "./models";
 import {ICurrencyMap, IAccountMap} from "./LedgerStore";
 
@@ -9,83 +10,83 @@ const currencies: ICurrencyMap = {
 };
 
 const accounts: IAccountMap = {
-    '1': {
-        id: '1',
+    '101': {
+        id: '101',
         name: 'Current assets',
         type: AccountType.ASSET,
         currency: currencies['USD'],
         tags: [] as string[],
         transactions: [] as ITransaction[]
     },
-    '2': {
-        id: '2',
+    '102': {
+        id: '102',
         name: 'Investments',
         type: AccountType.ASSET,
         currency: currencies['USD'],
         tags: [] as string[],
         transactions: [] as ITransaction[]
     },
-    '3': {
-        id: '3',
+    '103': {
+        id: '103',
         name: 'My checking account',
         type: AccountType.ASSET,
-        parent: '1',
+        parent: '101',
         currency: currencies['USD'],
         tags: [] as string[],
         transactions: [] as ITransaction[]
     },
-    '4': {
-        id: '4',
+    '104': {
+        id: '104',
         name: 'My brokerage account',
         type: AccountType.ASSET,
-        parent: '2',
+        parent: '102',
         currency: currencies['USD'],
         tags: [] as string[],
         transactions: [] as ITransaction[]
     },
-    '5': {
-        id: '5',
+    '105': {
+        id: '105',
         name: 'Short term liabilities',
         type: AccountType.LIABILITY,
         currency: currencies['USD'],
         tags: [] as string[],
         transactions: [] as ITransaction[]
     },
-    '6': {
-        id: '6',
+    '106': {
+        id: '106',
         name: 'Platinum credit card',
         type: AccountType.LIABILITY,
-        parent: '5',
+        parent: '105',
         currency: currencies['USD'],
         tags: [] as string[],
         transactions: [] as ITransaction[]
     },
-    '7': {
-        id: '7',
+    '107': {
+        id: '107',
         name: 'Salary',
         type: AccountType.INCOME,
         currency: currencies['USD'],
         tags: [] as string[],
         transactions: [] as ITransaction[]
     },
-    '8': {
-        id: '8',
+    '108': {
+        id: '108',
         name: 'Other income',
         type: AccountType.INCOME,
         currency: currencies['USD'],
         tags: [] as string[],
         transactions: [] as ITransaction[]
     },
-    '9': {
-        id: '9',
+    '109': {
+        id: '109',
         name: 'Other expenses',
         type: AccountType.EXPENSE,
         currency: currencies['USD'],
         tags: [] as string[],
         transactions: [] as ITransaction[]
     },
-    '10': {
-        id: '10',
+    '110': {
+        id: '110',
         name: 'Opening balances',
         type: AccountType.EQUITY,
         currency: currencies['USD'],
@@ -93,6 +94,13 @@ const accounts: IAccountMap = {
         transactions: [] as ITransaction[]
     }
 };
+
+function uuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        let r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+    });
+}
 
 /*
 const data = _.mapValues({

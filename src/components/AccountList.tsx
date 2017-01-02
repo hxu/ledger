@@ -5,6 +5,7 @@ import AccountListItem from "./AccountListItem";
 import {IAccountMap, ILedgerStore} from "../api/LedgerStore";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
+import {ITreeNode, Tree} from "@blueprintjs/core";
 
 
 interface AccountListProps {
@@ -12,6 +13,10 @@ interface AccountListProps {
 
 interface AccountListState {
     accounts: IAccountMap;
+}
+
+interface AccountListOwnState {
+    nodes: ITreeNode[];
 }
 
 const mapStateToProps = (state: ILedgerStore): AccountListState => {
@@ -24,13 +29,87 @@ const mapDispatchToProps =  (dispatch: Dispatch<ILedgerStore>): {} => {
 
 type AccountListComponentProps = AccountListProps & AccountListState;
 
-class AccountListComponent extends React.Component<AccountListComponentProps, {}> {
+class AccountListComponent extends React.Component<AccountListComponentProps, AccountListOwnState> {
     constructor(props: AccountListComponentProps) {
         super(props);
+        this.makeStartingNodes = this.makeStartingNodes.bind(this);
+
+        this.state = {
+            nodes: this.makeStartingNodes()
+        };
+
         this.makeAccount = this.makeAccount.bind(this);
         this.makeAccounts = this.makeAccounts.bind(this);
+        this.makeNodes();
     }
-    componentDidMount() {
+
+    makeStartingNodes(): ITreeNode[] {
+        return [
+            {
+                id: AccountType.ASSET,
+                hasCaret: true,
+                iconName: 'folder-close',
+                label: 'Assets',
+                childNodes: []
+            },
+            {
+                id: AccountType.LIABILITY,
+                hasCaret: true,
+                iconName: 'folder-close',
+                label: 'Liabilities',
+                childNodes: []
+            },
+            {
+                id: AccountType.EQUITY,
+                hasCaret: true,
+                iconName: 'folder-close',
+                label: 'Equity',
+                childNodes: [],
+            },
+            {
+                id: AccountType.INCOME,
+                hasCaret: true,
+                iconName: 'folder-close',
+                label: 'Income',
+                childNodes: []
+            },
+            {
+                id: AccountType.EXPENSE,
+                hasCaret: true,
+                iconName: 'folder-close',
+                label: 'Expense',
+                childNodes: []
+            }
+        ]
+    }
+
+    makeNodes() {
+        let nodeMap = _.keyBy(this.state.nodes, 'id');
+        let rawNodes = _.reverse(_.orderBy(_.values(this.props.accounts), 'parent'));
+        _.forEach(rawNodes, function(acct: IAccount) {
+            let thisNode = {
+                id: acct.id,
+                childNodes: [] as ITreeNode[],
+                iconName: 'dollar',
+                label: acct.name
+            };
+
+            if (_.isEmpty(acct.parent)) {
+                nodeMap[acct.type].childNodes.push(thisNode);
+            } else {
+                nodeMap[acct.parent].childNodes.push(thisNode);
+            }
+
+            nodeMap[thisNode.id] = thisNode;
+        });
+
+        _.forEach(nodeMap, function(node, k) {
+            if (node.childNodes.length === 0) {
+                node.hasCaret = false;
+            } else {
+                node.hasCaret = true;
+            }
+        });
     }
 
     makeAccount(account: IAccount, depth: number): JSX.Element {
@@ -64,15 +143,23 @@ class AccountListComponent extends React.Component<AccountListComponentProps, {}
       return res;
     }
 
+    private handleNodeCollapse = (nodeData: ITreeNode) => {
+        nodeData.isExpanded = false;
+        this.setState(this.state);
+    };
+
+    private handleNodeExpand = (nodeData: ITreeNode) => {
+        nodeData.isExpanded = true;
+        this.setState(this.state);
+    };
+
     render() {
         return (
             <div>
-                <h5>Assets</h5>
-                {this.makeAccounts(_.filter(_.values(this.props.accounts), {type: AccountType.ASSET}), null, null)}
-                <h5>Liabilities</h5>
-                <h5>Equity</h5>
-                <h5>Income</h5>
-                <h5>Expense</h5>
+                <Tree contents={this.state.nodes}
+                      onNodeCollapse={this.handleNodeCollapse}
+                      onNodeExpand={this.handleNodeExpand}
+                />
             </div>
         )
     }
