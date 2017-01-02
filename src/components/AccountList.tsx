@@ -1,17 +1,16 @@
 import * as React from "react";
 import * as _ from "lodash";
 import {IAccount, AccountType} from "../api/models";
-import AccountListItem from "./AccountListItem";
 import {IAccountMap, ILedgerStore} from "../api/LedgerStore";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {ITreeNode, Tree} from "@blueprintjs/core";
 
 
-interface AccountListProps {
+interface AccountListOwnProps {
 }
 
-interface AccountListState {
+interface AccountListStoreProps {
     accounts: IAccountMap;
 }
 
@@ -19,7 +18,7 @@ interface AccountListOwnState {
     nodes: ITreeNode[];
 }
 
-const mapStateToProps = (state: ILedgerStore): AccountListState => {
+const mapStateToProps = (state: ILedgerStore): AccountListStoreProps => {
     return {accounts: state.accounts};
 };
 
@@ -27,7 +26,7 @@ const mapDispatchToProps =  (dispatch: Dispatch<ILedgerStore>): {} => {
     return {};
 };
 
-type AccountListComponentProps = AccountListProps & AccountListState;
+type AccountListComponentProps = AccountListOwnProps & AccountListStoreProps;
 
 class AccountListComponent extends React.Component<AccountListComponentProps, AccountListOwnState> {
     constructor(props: AccountListComponentProps) {
@@ -38,8 +37,6 @@ class AccountListComponent extends React.Component<AccountListComponentProps, Ac
             nodes: this.makeStartingNodes()
         };
 
-        this.makeAccount = this.makeAccount.bind(this);
-        this.makeAccounts = this.makeAccounts.bind(this);
         this.makeNodes();
     }
 
@@ -104,43 +101,8 @@ class AccountListComponent extends React.Component<AccountListComponentProps, Ac
         });
 
         _.forEach(nodeMap, function(node, k) {
-            if (node.childNodes.length === 0) {
-                node.hasCaret = false;
-            } else {
-                node.hasCaret = true;
-            }
+            node.hasCaret = node.childNodes.length !== 0;
         });
-    }
-
-    makeAccount(account: IAccount, depth: number): JSX.Element {
-        return (
-            <AccountListItem
-                depth={depth}
-                key={account.id}
-                account={account} />
-        );
-    }
-
-    makeAccounts(accts: IAccount[], seen: Set<String>, depth: number): JSX.Element[] {
-        let byParent = _.groupBy(_.values(this.props.accounts), 'parent');
-        depth = depth || 0;
-        seen = seen || new Set([]);
-        let res: JSX.Element[] = [];
-
-        const makeAccount = this.makeAccount;
-        const makeAccounts = this.makeAccounts;
-
-        _.mapValues(accts, function(acct) {
-            if (!seen.has(acct.id)) {
-                res.push(makeAccount(acct, depth));
-                seen.add(acct.id);
-
-          if (acct.id in byParent) {
-            res.push(...makeAccounts(byParent[acct.id], seen, depth + 1));
-          }
-        }
-      });
-      return res;
     }
 
     private handleNodeCollapse = (nodeData: ITreeNode) => {
@@ -164,5 +126,5 @@ class AccountListComponent extends React.Component<AccountListComponentProps, Ac
 
 }
 
-export const AccountList: React.ComponentClass<AccountListProps> =
+export const AccountList: React.ComponentClass<AccountListOwnProps> =
     connect(mapStateToProps, mapDispatchToProps)(AccountListComponent);

@@ -28,7 +28,7 @@ const intialLedgerStoreState: ILedgerStore = {
     accounts: data.accounts,
     transactions: {} as ITransactionMap,
     splits: {} as ISplitMap,
-    currencies: {} as ICurrencyMap
+    currencies: data.currencies
 };
 
 export interface IAction<P> {
