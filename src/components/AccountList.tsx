@@ -155,7 +155,7 @@ class AccountListComponent extends React.Component<AccountListComponentProps, Ac
 
     render() {
         return (
-            <div>
+            <div id="account-sidebar">
                 <Tree contents={this.state.nodes}
                       onNodeCollapse={this.handleNodeCollapse}
                       onNodeExpand={this.handleNodeExpand}
