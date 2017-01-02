@@ -50,6 +50,7 @@ class _AddAccountWidget extends React.Component<AddAccountWidgetStoreProps, AddA
         let options: JSX.Element[] = [<option key="-1">Choose a parent</option>];
         let validParents: IAccount[] = _.filter(_.values(this.props.accounts), {type: this.state.type});
         _.forEach(validParents, function(acct: IAccount) {
+            console.log(validParents);
             options.push(<option key={acct.id} value={acct.id}>{acct.name}</option>);
         });
         return options;
@@ -63,7 +64,7 @@ class _AddAccountWidget extends React.Component<AddAccountWidgetStoreProps, AddA
                     <div className="pt-select">
                         <select
                             onChange={(e: React.FormEvent<HTMLSelectElement>) => {
-                            this.setState(Object.assign({}, this.state, {type: parseInt(e.currentTarget.value)}))
+                            this.setState(Object.assign({}, this.state, {type: parseInt(e.currentTarget.value), parent: null}))
                         }}>
                             {this.makeTypeOptions()}
                         </select>
