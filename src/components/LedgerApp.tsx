@@ -10,7 +10,9 @@ export class LedgerApp extends React.Component<undefined, undefined> {
     render() {
         return (
             <div id="app-container">
-                <AccountList />
+                <div id="account-sidebar">
+                    <AccountList />
+                </div>
                 <div id="account-detail"><h3>Account body</h3></div>
             </div>
         )
