@@ -105,6 +105,8 @@ class _AddAccountWidget extends React.Component<AddAccountWidgetStoreProps, AddA
                     </div>
                 </label>
 
+                <button type="button" className="pt-button pt-intent-primary">Create</button>
+
                 <pre>
                     {JSON.stringify(this.state, null, 2)}
                 </pre>
