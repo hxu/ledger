@@ -187,6 +187,7 @@ class AccountListComponent extends React.Component<AccountListComponentProps, Ac
             nodeMap[thisNode.id] = thisNode;
         });
 
+        // FIXME: this should preserve childnodes order such that any account additions are put on the end
         _.forEach(nodeMap, function(node, k) {
             node.hasCaret = node.childNodes.length !== 0;
         });
