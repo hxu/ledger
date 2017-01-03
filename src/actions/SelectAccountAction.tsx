@@ -1,6 +1,6 @@
 import * as React from "react";
 import {IAccount} from "../api/models";
-import {IAction, isAction} from "./IAction";
+import {IAction} from "./IAction";
 import {ILedgerStore} from "../api/ILedgerStore";
 
 export const SELECT_ACCOUNT = 'SELECT_ACCOUNT';
@@ -23,18 +23,15 @@ export function deselectAccountAction(): IAction<DESELECT_ACCOUNT> {
     };
 }
 
-export function selectAccountHandler(state: ILedgerStore, action: IAction<any>): ILedgerStore {
-    if (isAction<SELECT_ACCOUNT>(action, SELECT_ACCOUNT)) {
-        return Object.assign({}, state, {
-            selectedAccount: action.payload.account.id
-        });
-    }
-    if (isAction<DESELECT_ACCOUNT>(action, DESELECT_ACCOUNT)) {
-        return Object.assign({}, state, {
-            selectedAccount: null
-        });
-    }
+export function selectAccountHandler(state: ILedgerStore, action: IAction<SELECT_ACCOUNT>): ILedgerStore {
+    return Object.assign({}, state, {
+        selectedAccount: action.payload.account.id
+    });
+}
 
-    return state;
+export function deselectAccountHandler(state: ILedgerStore, action: IAction<DESELECT_ACCOUNT>): ILedgerStore {
+    return Object.assign({}, state, {
+        selectedAccount: null
+    });
 }
 

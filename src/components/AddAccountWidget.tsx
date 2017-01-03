@@ -1,8 +1,9 @@
 import * as React from "react";
 import * as _ from "lodash";
-import {ICurrency, AccountType, IAccount} from "../api/models";
+import {ICurrency, AccountType, IAccount, IAccountCreateRequest} from "../api/models";
 import {Dispatch, connect} from "react-redux";
 import {IAccountMap, ICurrencyMap, ILedgerStore} from "../api/ILedgerStore";
+import {addAccountAction} from "../actions/AddAccountAction";
 
 interface AddAccountWidgetStoreProps {
     accounts: IAccountMap
@@ -16,10 +17,18 @@ interface AddAccountWidgetState {
     currency: ICurrency;
 }
 
-class _AddAccountWidget extends React.Component<AddAccountWidgetStoreProps, AddAccountWidgetState> {
-    constructor(props: AddAccountWidgetStoreProps) {
+interface AddAccountWidgetDispatch {
+    addAccount: (acct: IAccountCreateRequest) => void
+}
+
+type AddAccountWidgetProps = AddAccountWidgetStoreProps & AddAccountWidgetDispatch
+
+class _AddAccountWidget extends React.Component<AddAccountWidgetProps, AddAccountWidgetState> {
+    constructor(props: AddAccountWidgetProps) {
         super(props);
         this.state = this.makeDefaultState();
+
+        this.makeNewAccountRequest = this.makeNewAccountRequest.bind(this);
     }
 
     makeDefaultState(): AddAccountWidgetState {
@@ -54,10 +63,14 @@ class _AddAccountWidget extends React.Component<AddAccountWidgetStoreProps, AddA
         let options: JSX.Element[] = [<option key="-1">Choose a parent</option>];
         let validParents: IAccount[] = _.filter(_.values(this.props.accounts), {type: this.state.type});
         _.forEach(validParents, function(acct: IAccount) {
-            console.log(validParents);
             options.push(<option key={acct.id} value={acct.id}>{acct.name}</option>);
         });
         return options;
+    }
+
+    makeNewAccountRequest() {
+        console.log('making new account');
+        this.props.addAccount(this.state);
     }
 
     render() {
@@ -109,7 +122,7 @@ class _AddAccountWidget extends React.Component<AddAccountWidgetStoreProps, AddA
                     </div>
                 </label>
 
-                <button type="button" className="pt-button pt-intent-primary">Create</button>
+                <button type="button" className="pt-button pt-intent-primary" onClick={this.makeNewAccountRequest}>Create</button>
 
                 <pre>
                     {JSON.stringify(this.state, null, 2)}
@@ -126,8 +139,10 @@ const mapStateToProps = (state: ILedgerStore): AddAccountWidgetStoreProps => {
     };
 };
 
-const mapDispatchToProps =  (dispatch: Dispatch<ILedgerStore>): {} => {
-    return {};
+const mapDispatchToProps =  (dispatch: Dispatch<ILedgerStore>): AddAccountWidgetDispatch => {
+    return {
+        addAccount: (acct: IAccountCreateRequest) => {dispatch(addAccountAction(acct))}
+    };
 };
 
 
