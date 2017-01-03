@@ -1,6 +1,5 @@
-import * as _ from 'lodash';
-import {AccountType, ICurrency, ITransaction} from "./models";
-import {ICurrencyMap, IAccountMap} from "./LedgerStore";
+import {AccountType, ITransaction} from "./models";
+import {ICurrencyMap, IAccountMap} from "./ILedgerStore";
 
 const currencies: ICurrencyMap = {
     USD: {code: 'USD'},

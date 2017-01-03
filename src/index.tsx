@@ -1,8 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import {LedgerApp} from "./components/LedgerApp";
-import {ILedgerStore, selectAccountHandler, LedgerStore} from "./api/LedgerStore";
-import {Store, createStore} from "redux";
+import {LedgerStore} from "./api/LedgerStore";
 import {Provider} from "react-redux";
 
 

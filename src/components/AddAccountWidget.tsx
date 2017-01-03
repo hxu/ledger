@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as _ from "lodash";
-import {IAccountMap, ILedgerStore, ICurrencyMap} from "../api/LedgerStore";
 import {ICurrency, AccountType, IAccount} from "../api/models";
 import {Dispatch, connect} from "react-redux";
+import {IAccountMap, ICurrencyMap, ILedgerStore} from "../api/ILedgerStore";
 
 interface AddAccountWidgetStoreProps {
     accounts: IAccountMap
@@ -19,7 +19,11 @@ interface AddAccountWidgetState {
 class _AddAccountWidget extends React.Component<AddAccountWidgetStoreProps, AddAccountWidgetState> {
     constructor(props: AddAccountWidgetStoreProps) {
         super(props);
-        this.state = {
+        this.state = this.makeDefaultState();
+    }
+
+    makeDefaultState(): AddAccountWidgetState {
+        return {
             name: '',
             parent: null,
             type: null,

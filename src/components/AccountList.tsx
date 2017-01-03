@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as _ from "lodash";
 import {IAccount, AccountType} from "../api/models";
-import {IAccountMap, ILedgerStore} from "../api/LedgerStore";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {ITreeNode, Tree} from "@blueprintjs/core";
+import {IAccountMap, ILedgerStore} from "../api/ILedgerStore";
 
 
 interface AccountListOwnProps {
