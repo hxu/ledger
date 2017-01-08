@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import {ICurrency, AccountType, IAccount, IAccountCreateRequest} from "../api/models";
 import {Dispatch, connect} from "react-redux";
 import {IAccountMap, ICurrencyMap, ILedgerStore} from "../api/ILedgerStore";
-import {addAccountAction} from "../actions/AddAccountAction";
+import {addAccount} from "../actions/AddAccountAction";
 
 interface AddAccountWidgetStoreProps {
     accounts: IAccountMap
@@ -142,7 +142,7 @@ const mapStateToProps = (state: ILedgerStore): AddAccountWidgetStoreProps => {
 
 const mapDispatchToProps =  (dispatch: Dispatch<ILedgerStore>): AddAccountWidgetDispatch => {
     return {
-        addAccount: (acct: IAccountCreateRequest) => {dispatch(addAccountAction(acct))}
+        addAccount: (acct: IAccountCreateRequest) => {dispatch(addAccount(acct))}
     };
 };
 

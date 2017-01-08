@@ -1,12 +1,22 @@
 import {Store, createStore, applyMiddleware} from "redux";
 import {
-    selectAccountHandler, SELECT_ACCOUNT, DESELECT_ACCOUNT,
+    selectAccountHandler,
+    SELECT_ACCOUNT,
+    DESELECT_ACCOUNT,
     deselectAccountHandler
 } from "../actions/SelectAccountAction";
 import {ILedgerStore, intialLedgerStoreState} from "./ILedgerStore";
 import {IAction, isAction} from "../actions/IAction";
-import {ADD_ACCOUNT, addAccountHandler} from "../actions/AddAccountAction";
+import {
+    ADD_ACCOUNT_START,
+    ADD_ACCOUNT_SUCCESS,
+    ADD_ACCOUNT_ERROR,
+    addAccountStartHandler,
+    addAccountSuccessHandler,
+    addAccountErrorHandler
+} from "../actions/AddAccountAction";
 import createLogger = require("redux-logger");
+let thunk: any = require('redux-thunk').default;
 
 
 export function rootReducer(state: ILedgerStore, action: IAction<any>): ILedgerStore {
@@ -18,8 +28,16 @@ export function rootReducer(state: ILedgerStore, action: IAction<any>): ILedgerS
         return deselectAccountHandler(state, action);
     }
 
-    if (isAction<ADD_ACCOUNT>(action, ADD_ACCOUNT)) {
-        return addAccountHandler(state, action);
+    if (isAction<ADD_ACCOUNT_START>(action, ADD_ACCOUNT_START)) {
+        return addAccountStartHandler(state, action);
+    }
+
+    if (isAction<ADD_ACCOUNT_SUCCESS>(action, ADD_ACCOUNT_SUCCESS)) {
+        return addAccountSuccessHandler(state, action);
+    }
+
+    if (isAction<ADD_ACCOUNT_ERROR>(action, ADD_ACCOUNT_ERROR)) {
+        return addAccountErrorHandler(state, action);
     }
 
     return state;
@@ -30,5 +48,5 @@ const logger = createLogger();
 export let LedgerStore: Store<ILedgerStore> = createStore(
     rootReducer,
     intialLedgerStoreState,
-    applyMiddleware(logger)
+    applyMiddleware(thunk, logger)
 );
