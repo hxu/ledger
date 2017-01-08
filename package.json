@@ -22,6 +22,7 @@
     "@types/react-dom": "^0.14.19",
     "@types/react-redux": "^4.4.35",
     "@types/redux-logger": "^2.6.32",
+    "@types/redux-thunk": "^2.1.32",
     "lodash": "^4.17.3",
     "moment": "^2.17.1",
     "normalizr": "^3.0.2",

@@ -1,17 +1,12 @@
 import {IAccountCreateRequest, IAccount} from "../api/models";
 import {IAction} from "./IAction";
 import {ILedgerStore, IAccountMap} from "../api/ILedgerStore";
-import {Dispatch} from "react-redux";
 import Backend from "../api/Backend";
+import {Dispatch} from "redux";
 
-export const ADD_ACCOUNT = 'ADD_ACCOUNT';
 export const ADD_ACCOUNT_START = 'ADD_ACCOUNT_START';
 export const ADD_ACCOUNT_SUCCESS = 'ADD_ACCOUNT_SUCCESS';
 export const ADD_ACCOUNT_ERROR = 'ADD_ACCOUNT_ERROR';
-
-export interface ADD_ACCOUNT {
-    account: IAccountCreateRequest
-}
 
 export interface ADD_ACCOUNT_START {
     account: IAccountCreateRequest
@@ -23,13 +18,6 @@ export interface ADD_ACCOUNT_SUCCESS {
 
 export interface ADD_ACCOUNT_ERROR {
     account: IAccountCreateRequest
-}
-
-export function addAccountAction(acct: IAccountCreateRequest): IAction<ADD_ACCOUNT> {
-    return {
-        type: ADD_ACCOUNT,
-        payload: {account: acct}
-    };
 }
 
 export function addAccountStartAction(acct: IAccountCreateRequest): IAction<ADD_ACCOUNT_START> {
@@ -74,7 +62,7 @@ export function addAccountErrorHandler(state: ILedgerStore, action: IAction<ADD_
 export function addAccount(acct: IAccountCreateRequest): ((dispatch: Dispatch<ILedgerStore>) => void) {
     // Asynchronously add an account
     return (dispatch: Dispatch<ILedgerStore>): Promise<IAccount> => {
-        let action = addAccountAction(acct);
+        let action = addAccountStartAction(acct);
         dispatch(action);
 
         return Backend.storeAccount(action.payload.account)
