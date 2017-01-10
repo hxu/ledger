@@ -59,7 +59,7 @@ export function addAccountErrorHandler(state: ILedgerStore, action: IAction<ADD_
 }
 
 
-export function addAccount(acct: IAccountCreateRequest): ((dispatch: Dispatch<ILedgerStore>) => void) {
+export function addAccount(acct: IAccountCreateRequest): ((dispatch: Dispatch<ILedgerStore>) => Promise<IAccount>) {
     // Asynchronously add an account
     return (dispatch: Dispatch<ILedgerStore>): Promise<IAccount> => {
         let action = addAccountStartAction(acct);

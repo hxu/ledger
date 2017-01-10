@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as _ from "lodash";
 import {ICurrency, AccountType, IAccount, IAccountCreateRequest} from "../api/models";
-import {Dispatch, connect} from "react-redux";
+import {connect, Dispatch} from "react-redux";
 import {IAccountMap, ICurrencyMap, ILedgerStore} from "../api/ILedgerStore";
 import {addAccount} from "../actions/AddAccountAction";
 
@@ -18,7 +18,7 @@ interface AddAccountWidgetState {
 }
 
 interface AddAccountWidgetDispatch {
-    addAccount: (acct: IAccountCreateRequest) => void
+    addAccount: (acct: IAccountCreateRequest) => Promise<IAccount>
 }
 
 type AddAccountWidgetProps = AddAccountWidgetStoreProps & AddAccountWidgetDispatch
@@ -71,7 +71,15 @@ class _AddAccountWidget extends React.Component<AddAccountWidgetProps, AddAccoun
     makeNewAccountRequest() {
         // FIXME: need to check for validity of the inputs
         console.log('making new account');
-        this.props.addAccount(this.state);
+        this.props.addAccount(this.state).then(() => {
+            console.log('success!');
+            this.setState(this.makeDefaultState());
+        });
+    }
+
+    shouldComponentUpdate(nextProps: any, nextState: any, nextContext: any) {
+        console.log('shoudupdate?');
+        return true;
     }
 
     render() {
@@ -81,6 +89,7 @@ class _AddAccountWidget extends React.Component<AddAccountWidgetProps, AddAccoun
                     Account type
                     <div className="pt-select">
                         <select
+                            value={this.state.type || ''}
                             onChange={(e: React.FormEvent<HTMLSelectElement>) => {
                             this.setState(Object.assign({}, this.state, {type: parseInt(e.currentTarget.value), parent: null}))
                         }}>
@@ -92,6 +101,7 @@ class _AddAccountWidget extends React.Component<AddAccountWidgetProps, AddAccoun
                 <label className="pt-label pt-inline">
                     Name
                     <input className="pt-input" type="text"
+                           value={this.state.name}
                            onChange={
                                (e: React.FormEvent<HTMLInputElement>) => {
                                    this.setState(Object.assign({}, this.state, {name: e.currentTarget.value}))
@@ -103,6 +113,7 @@ class _AddAccountWidget extends React.Component<AddAccountWidgetProps, AddAccoun
                     Currency
                     <div className="pt-select">
                         <select
+                            value={(this.state.currency) ? this.state.currency.code : ''}
                             onChange={(e: React.FormEvent<HTMLSelectElement>) => {
                             this.setState(Object.assign({}, this.state, {currency: e.currentTarget.value}))
                         }}>
@@ -115,6 +126,7 @@ class _AddAccountWidget extends React.Component<AddAccountWidgetProps, AddAccoun
                     Parent account
                     <div className="pt-select">
                         <select
+                            value={this.state.parent || ''}
                             onChange={(e: React.FormEvent<HTMLSelectElement>) => {
                             this.setState(Object.assign({}, this.state, {parent: e.currentTarget.value}))
                         }}>
@@ -142,7 +154,7 @@ const mapStateToProps = (state: ILedgerStore): AddAccountWidgetStoreProps => {
 
 const mapDispatchToProps =  (dispatch: Dispatch<ILedgerStore>): AddAccountWidgetDispatch => {
     return {
-        addAccount: (acct: IAccountCreateRequest) => {dispatch(addAccount(acct))}
+        addAccount: (acct: IAccountCreateRequest) => { return dispatch(addAccount(acct)); }
     };
 };
 
