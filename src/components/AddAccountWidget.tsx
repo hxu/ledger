@@ -82,7 +82,7 @@ class _AddAccountWidget extends React.Component<AddAccountWidgetProps, AddAccoun
                     Account type
                     <div className="pt-select">
                         <select
-                            value={this.state.type || ''}
+                            value={(this.state.type) ? this.state.type.toString() : ''}
                             onChange={(e: React.FormEvent<HTMLSelectElement>) => {
                             this.setState(Object.assign({}, this.state, {type: parseInt(e.currentTarget.value), parent: null}))
                         }}>

@@ -21,11 +21,11 @@ export interface ICurrency {
 }
 
 export enum AccountType {
-    ASSET,
-    EXPENSE,
-    LIABILITY,
-    INCOME,
-    EQUITY
+    ASSET = 1,
+    EXPENSE = 2,
+    LIABILITY = 3,
+    INCOME = 4,
+    EQUITY = 5
 }
 
 export interface ITransaction {
