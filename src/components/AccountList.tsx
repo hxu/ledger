@@ -5,6 +5,8 @@ import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {ITreeNode, Tree} from "@blueprintjs/core";
 import {IAccountMap, ILedgerStore} from "../api/ILedgerStore";
+import {IAction} from "../actions/IAction";
+import {SELECT_ACCOUNT, selectAccountAction} from "../actions/SelectAccountAction";
 
 
 interface AccountListOwnProps {
@@ -12,21 +14,31 @@ interface AccountListOwnProps {
 
 interface AccountListStoreProps {
     accounts: IAccountMap;
+    selectedAccount: string;
 }
 
 interface AccountListOwnState {
     nodes: ITreeNode[];
 }
 
+interface AccountListDispatch {
+    selectAccount: (acct: IAccount) => IAction<SELECT_ACCOUNT>;
+}
+
 const mapStateToProps = (state: ILedgerStore): AccountListStoreProps => {
-    return {accounts: state.accounts};
+    return {
+        accounts: state.accounts,
+        selectedAccount: state.selectedAccount
+    };
 };
 
-const mapDispatchToProps =  (dispatch: Dispatch<ILedgerStore>): {} => {
-    return {};
+const mapDispatchToProps =  (dispatch: Dispatch<ILedgerStore>): AccountListDispatch => {
+    return {
+        selectAccount: (acct: IAccount) => { return dispatch(selectAccountAction(acct)) }
+    }
 };
 
-type AccountListComponentProps = AccountListOwnProps & AccountListStoreProps;
+type AccountListComponentProps = AccountListOwnProps & AccountListStoreProps & AccountListDispatch;
 
 class AccountListComponent extends React.Component<AccountListComponentProps, AccountListOwnState> {
     constructor(props: AccountListComponentProps) {
@@ -34,7 +46,7 @@ class AccountListComponent extends React.Component<AccountListComponentProps, Ac
         this.makeStartingNodes = this.makeStartingNodes.bind(this);
 
         this.state = {
-            nodes: this.processAccountsIntoNodes(props.accounts)
+            nodes: this.processAccountsIntoNodes(props.accounts, null)
         };
     }
 
@@ -109,12 +121,11 @@ class AccountListComponent extends React.Component<AccountListComponentProps, Ac
         return thisNode;
     }
 
-    processAccountsIntoNodes(accts: IAccountMap): ITreeNode[] {
+    processAccountsIntoNodes(accts: IAccountMap, selectedAcct: string): ITreeNode[] {
         // Takes the accounts from the props and refreshes the tree.
         let currentNodeMap = this.makeCurrentNodeMap();
         let propsToCopy: string[] = [
-            'isExpanded',
-            'isSelected'
+            'isExpanded'
         ];
 
         let nodeMap: {[key: string]: ITreeNode} = {};
@@ -136,6 +147,8 @@ class AccountListComponent extends React.Component<AccountListComponentProps, Ac
             if (thisNode.id in currentNodeMap) {
                 _.merge(thisNode, _.pick(currentNodeMap[thisNode.id], propsToCopy));
             }
+
+            thisNode.isSelected = thisNode.id === selectedAcct;
 
             // Push this node into the childNodes of the relevant ITreeNode
             if (_.isEmpty(acct.parent)) {
@@ -163,7 +176,7 @@ class AccountListComponent extends React.Component<AccountListComponentProps, Ac
     }
 
     componentWillReceiveProps(nextProps: AccountListComponentProps) {
-        this.setState({nodes: this.processAccountsIntoNodes(nextProps.accounts)});
+        this.setState({nodes: this.processAccountsIntoNodes(nextProps.accounts, nextProps.selectedAccount)});
     }
 
     private handleNodeCollapse = (nodeData: ITreeNode) => {
@@ -176,11 +189,20 @@ class AccountListComponent extends React.Component<AccountListComponentProps, Ac
         this.setState(this.state);
     };
 
+    private handleNodeClick = (nodeData: ITreeNode) => {
+        // Don't dispatch if we've clicked a root node
+        if (!(nodeData.id in _.values(AccountType))) {
+            let clickedAccount = this.props.accounts[nodeData.id];
+            this.props.selectAccount(clickedAccount);
+        }
+    };
+
     render() {
         return (
             <Tree contents={this.state.nodes}
                   onNodeCollapse={this.handleNodeCollapse}
                   onNodeExpand={this.handleNodeExpand}
+                  onNodeClick={this.handleNodeClick}
             />
         )
     }
