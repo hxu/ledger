@@ -70,16 +70,9 @@ class _AddAccountWidget extends React.Component<AddAccountWidgetProps, AddAccoun
 
     makeNewAccountRequest() {
         // FIXME: need to check for validity of the inputs
-        console.log('making new account');
         this.props.addAccount(this.state).then(() => {
-            console.log('success!');
             this.setState(this.makeDefaultState());
         });
-    }
-
-    shouldComponentUpdate(nextProps: any, nextState: any, nextContext: any) {
-        console.log('shoudupdate?');
-        return true;
     }
 
     render() {
