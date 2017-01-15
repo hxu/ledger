@@ -36,7 +36,12 @@ class SplitListComponent extends React.Component<SplitListComponentProps, SplitL
     }
 
     render() {
-        return <div>Split list</div>
+        return (
+            <div>
+                <Table numRows={20}>
+                </Table>
+            </div>
+        )
     }
 }
 
