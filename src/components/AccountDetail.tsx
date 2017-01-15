@@ -4,6 +4,7 @@ import {ISplitMap, ILedgerStore, IAccountMap} from "../api/ILedgerStore";
 import {Dispatch, connect} from "react-redux";
 import {IAccount} from "../api/models";
 import {NonIdealState} from "@blueprintjs/core";
+import {SplitList} from "./SplitList";
 
 interface AccountDetailOwnProps {
 }
@@ -52,11 +53,11 @@ class AccountDetailComponent extends React.Component<AccountDetailComponentProps
         } else {
             return (
                 <div>
-                    {}
                     Selected account: {this.props.selectedAccount}
                     <pre>
                     {JSON.stringify(this.props.account, undefined, 2)}
                 </pre>
+                    <SplitList splits={{}}/>
                 </div>
             );
         }
