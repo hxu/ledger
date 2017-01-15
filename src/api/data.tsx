@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import {AccountType, ISplit, ITransaction} from "./models";
+import {AccountType, ISplit, ITransaction, IBoolMap} from "./models";
 import {ICurrencyMap, IAccountMap, ISplitMap, ITransactionMap} from "./ILedgerStore";
 
 const currencies: ICurrencyMap = {
@@ -15,16 +15,16 @@ const accounts: IAccountMap = {
         name: 'Current assets',
         type: AccountType.ASSET,
         currency: currencies['USD'],
-        tags: [] as string[],
-        splits: [] as string[]
+        tags: {} as IBoolMap,
+        splits: {} as IBoolMap
     },
     '102': {
         id: '102',
         name: 'Investments',
         type: AccountType.ASSET,
         currency: currencies['USD'],
-        tags: [] as string[],
-        splits: [] as string[]
+        tags: {} as IBoolMap,
+        splits: {} as IBoolMap
     },
     '103': {
         id: '103',
@@ -32,8 +32,8 @@ const accounts: IAccountMap = {
         type: AccountType.ASSET,
         parent: '101',
         currency: currencies['USD'],
-        tags: [] as string[],
-        splits: [] as string[]
+        tags: {} as IBoolMap,
+        splits: {} as IBoolMap
     },
     '104': {
         id: '104',
@@ -41,16 +41,16 @@ const accounts: IAccountMap = {
         type: AccountType.ASSET,
         parent: '102',
         currency: currencies['USD'],
-        tags: [] as string[],
-        splits: [] as string[]
+        tags: {} as IBoolMap,
+        splits: {} as IBoolMap
     },
     '105': {
         id: '105',
         name: 'Short term liabilities',
         type: AccountType.LIABILITY,
         currency: currencies['USD'],
-        tags: [] as string[],
-        splits: [] as string[]
+        tags: {} as IBoolMap,
+        splits: {} as IBoolMap
     },
     '106': {
         id: '106',
@@ -58,40 +58,40 @@ const accounts: IAccountMap = {
         type: AccountType.LIABILITY,
         parent: '105',
         currency: currencies['USD'],
-        tags: [] as string[],
-        splits: [] as string[]
+        tags: {} as IBoolMap,
+        splits: {} as IBoolMap
     },
     '107': {
         id: '107',
         name: 'Salary',
         type: AccountType.INCOME,
         currency: currencies['USD'],
-        tags: [] as string[],
-        splits: [] as string[]
+        tags: {} as IBoolMap,
+        splits: {} as IBoolMap
     },
     '108': {
         id: '108',
         name: 'Other income',
         type: AccountType.INCOME,
         currency: currencies['USD'],
-        tags: [] as string[],
-        splits: [] as string[]
+        tags: {} as IBoolMap,
+        splits: {} as IBoolMap
     },
     '109': {
         id: '109',
         name: 'Other expenses',
         type: AccountType.EXPENSE,
         currency: currencies['USD'],
-        tags: [] as string[],
-        splits: [] as string[]
+        tags: {} as IBoolMap,
+        splits: {} as IBoolMap
     },
     '110': {
         id: '110',
         name: 'Opening balances',
         type: AccountType.EQUITY,
         currency: currencies['USD'],
-        tags: [] as string[],
-        splits: [] as string[]
+        tags: {} as IBoolMap,
+        splits: {} as IBoolMap
     }
 };
 
@@ -158,12 +158,12 @@ function uuid() {
 
 let txn1 = {
     id: uuid(),
-    splits: [] as string[],
+    splits: {} as IBoolMap,
 };
 
 let txn2 = {
     id: uuid(),
-    splits: [] as string[],
+    splits: {} as IBoolMap,
 };
 
 const transactions: ITransactionMap = {
@@ -175,7 +175,7 @@ const splits: ISplitMap = _.keyBy(_.map(_splits, (s, i) => {
     s.id = uuid();
     let txn = (i < 3) ? txn1: txn2;
     s.transaction = txn.id;
-    txn.splits.push(s.id);
+    txn.splits[s.id] = true;
     return s;
 }), "id");
 

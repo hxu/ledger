@@ -1,11 +1,15 @@
+export interface IBoolMap {
+    [k: string]: boolean
+}
+
 export interface IAccount {
     id: string;
     type: AccountType;
     name: string;
     currency: ICurrency;
     parent?: string;
-    tags: string[];
-    splits: string[];
+    tags: IBoolMap;
+    splits: IBoolMap;
 }
 
 export interface IAccountCreateRequest {
@@ -13,7 +17,7 @@ export interface IAccountCreateRequest {
     name: string;
     currency: ICurrency;
     parent?: string;
-    tags?: string[];
+    tags?: IBoolMap;
 }
 
 export interface ICurrency {
@@ -42,5 +46,5 @@ export interface ISplit {
 
 export interface ITransaction {
     id: string;
-    splits: string[];
+    splits: IBoolMap;
 }

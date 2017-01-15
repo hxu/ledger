@@ -15,7 +15,7 @@ export default class Backend {
             function(resolve, reject) {
                 let id = uuid();
                 let newAccount: IAccount = Object.assign(
-                    {tags: [], splits: []},
+                    {tags: {}, splits: {}},
                     acct,
                     {id: id}
                 );
