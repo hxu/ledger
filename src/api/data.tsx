@@ -176,6 +176,7 @@ const splits: ISplitMap = _.keyBy(_.map(_splits, (s, i) => {
     let txn = (i < 3) ? txn1: txn2;
     s.transaction = txn.id;
     txn.splits[s.id] = true;
+    accounts[s.account].splits[s.id] = true;
     return s;
 }), "id");
 
