@@ -5,7 +5,7 @@ export interface IAccount {
     currency: ICurrency;
     parent?: string;
     tags: string[];
-    splits: ISplit[];
+    splits: string[];
 }
 
 export interface IAccountCreateRequest {
@@ -32,14 +32,15 @@ export interface ISplit {
     id: string;
     date: number;
     description: string;
-    notes: string;
+    notes?: string;
     credit: number;
     debit: number;
-    currency: ICurrency;
-    account: IAccount;
+    currency: string;
+    account: string;
+    transaction: string;
 }
 
 export interface ITransaction {
     id: string;
-    transactions: ISplit[];
+    splits: string[];
 }

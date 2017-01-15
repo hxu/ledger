@@ -24,8 +24,8 @@ export interface ILedgerStore {
 export const intialLedgerStoreState: ILedgerStore = {
     selectedAccount: null,
     accounts: data.accounts,
-    transactions: {} as ITransactionMap,
-    splits: {} as ISplitMap,
+    transactions: data.transactions,
+    splits: data.splits,
     currencies: data.currencies
 };
 
