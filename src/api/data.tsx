@@ -180,67 +180,6 @@ const splits: ISplitMap = _.keyBy(_.map(_splits, (s, i) => {
     return s;
 }), "id");
 
-
-/*
-const data = _.mapValues({
-    accounts: [
-    ],
-    splits: [
-        {
-            id: 1,
-            splits: [1, 2, 3],
-            description: "Monthly salary"
-        },
-        {
-            id: 2,
-            splits: [4, 5],
-            description: 'Misc expenses'
-        }
-    ],
-    splits: [
-        {
-            id: 1,
-            account: 7,
-            amount: 10000,
-            timestamp: Date.UTC(2016, 4, 1),
-            transaction: 1
-        },
-        {
-            id: 2,
-            account: 3,
-            amount: 9000,
-            timestamp: Date.UTC(2016, 4, 1),
-            transaction: 1
-        },
-        {
-            id: 3,
-            account: 9,
-            amount: 1000,
-            timestamp: Date.UTC(2016, 4, 1),
-            transaction: 1,
-            description: 'Tax withholding'
-        },
-        {
-            id: 4,
-            account: 6,
-            amount: 250,
-            timestamp: Date.UTC(2016, 6, 12),
-            transaction: 2
-        },
-        {
-            id: 5,
-            account: 9,
-            amount: 250,
-            timestamp: Date.UTC(2016, 6, 12),
-            transaction: 2
-        }
-    ],
-    prices: []
-}, function(val) {
-    return _.keyBy(val, 'id');
-});
-*/
-
 export const data = {
     currencies: currencies,
     accounts: accounts,
