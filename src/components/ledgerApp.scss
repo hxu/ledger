@@ -1,12 +1,21 @@
+@import "../../node_modules/@blueprintjs/core/dist/variables";
 
 #app-container {
   display: flex;
+  padding-top: $pt-navbar-height;
+}
+
+#app-title {
+  margin-left: 20px;
 }
 
 #account-sidebar {
   flex-basis: 30%;
+  padding: 20px;
 }
 
 #account-detail {
   flex-basis: 70%;
+  padding: 20px;
+  display: flex;
 }
