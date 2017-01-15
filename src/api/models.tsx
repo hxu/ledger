@@ -5,7 +5,7 @@ export interface IAccount {
     currency: ICurrency;
     parent?: string;
     tags: string[];
-    transactions: ITransaction[];
+    splits: ISplit[];
 }
 
 export interface IAccountCreateRequest {
@@ -28,7 +28,7 @@ export enum AccountType {
     EQUITY = 5
 }
 
-export interface ITransaction {
+export interface ISplit {
     id: string;
     date: number;
     description: string;
@@ -39,7 +39,7 @@ export interface ITransaction {
     account: IAccount;
 }
 
-export interface ISplit {
+export interface ITransaction {
     id: string;
-    transactions: ITransaction[];
+    transactions: ISplit[];
 }

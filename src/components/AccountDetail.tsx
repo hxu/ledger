@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as _ from "lodash";
-import {ITransactionMap, ILedgerStore, IAccountMap} from "../api/ILedgerStore";
+import {ISplitMap, ILedgerStore, IAccountMap} from "../api/ILedgerStore";
 import {Dispatch, connect} from "react-redux";
 import {IAccount} from "../api/models";
 import {NonIdealState} from "@blueprintjs/core";
@@ -10,7 +10,7 @@ interface AccountDetailOwnProps {
 
 interface AccountDetailStoreProps {
     selectedAccount: string;
-    transactions: ITransactionMap;
+    splits: ISplitMap;
     account: IAccount;
 }
 
@@ -23,7 +23,7 @@ interface AccountDetailDispatch {
 const mapStateToProps = (state: ILedgerStore): AccountDetailStoreProps => {
     return {
         selectedAccount: state.selectedAccount,
-        transactions: state.transactions,
+        splits: state.splits,
         account: state.accounts[state.selectedAccount]
     };
 };

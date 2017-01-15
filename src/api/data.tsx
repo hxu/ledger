@@ -1,4 +1,4 @@
-import {AccountType, ITransaction} from "./models";
+import {AccountType, ISplit} from "./models";
 import {ICurrencyMap, IAccountMap} from "./ILedgerStore";
 
 const currencies: ICurrencyMap = {
@@ -15,7 +15,7 @@ const accounts: IAccountMap = {
         type: AccountType.ASSET,
         currency: currencies['USD'],
         tags: [] as string[],
-        transactions: [] as ITransaction[]
+        splits: [] as ISplit[]
     },
     '102': {
         id: '102',
@@ -23,7 +23,7 @@ const accounts: IAccountMap = {
         type: AccountType.ASSET,
         currency: currencies['USD'],
         tags: [] as string[],
-        transactions: [] as ITransaction[]
+        splits: [] as ISplit[]
     },
     '103': {
         id: '103',
@@ -32,7 +32,7 @@ const accounts: IAccountMap = {
         parent: '101',
         currency: currencies['USD'],
         tags: [] as string[],
-        transactions: [] as ITransaction[]
+        splits: [] as ISplit[]
     },
     '104': {
         id: '104',
@@ -41,7 +41,7 @@ const accounts: IAccountMap = {
         parent: '102',
         currency: currencies['USD'],
         tags: [] as string[],
-        transactions: [] as ITransaction[]
+        splits: [] as ISplit[]
     },
     '105': {
         id: '105',
@@ -49,7 +49,7 @@ const accounts: IAccountMap = {
         type: AccountType.LIABILITY,
         currency: currencies['USD'],
         tags: [] as string[],
-        transactions: [] as ITransaction[]
+        splits: [] as ISplit[]
     },
     '106': {
         id: '106',
@@ -58,7 +58,7 @@ const accounts: IAccountMap = {
         parent: '105',
         currency: currencies['USD'],
         tags: [] as string[],
-        transactions: [] as ITransaction[]
+        splits: [] as ISplit[]
     },
     '107': {
         id: '107',
@@ -66,7 +66,7 @@ const accounts: IAccountMap = {
         type: AccountType.INCOME,
         currency: currencies['USD'],
         tags: [] as string[],
-        transactions: [] as ITransaction[]
+        splits: [] as ISplit[]
     },
     '108': {
         id: '108',
@@ -74,7 +74,7 @@ const accounts: IAccountMap = {
         type: AccountType.INCOME,
         currency: currencies['USD'],
         tags: [] as string[],
-        transactions: [] as ITransaction[]
+        splits: [] as ISplit[]
     },
     '109': {
         id: '109',
@@ -82,7 +82,7 @@ const accounts: IAccountMap = {
         type: AccountType.EXPENSE,
         currency: currencies['USD'],
         tags: [] as string[],
-        transactions: [] as ITransaction[]
+        splits: [] as ISplit[]
     },
     '110': {
         id: '110',
@@ -90,7 +90,7 @@ const accounts: IAccountMap = {
         type: AccountType.EQUITY,
         currency: currencies['USD'],
         tags: [] as string[],
-        transactions: [] as ITransaction[]
+        splits: [] as ISplit[]
     }
 };
 
@@ -99,7 +99,7 @@ const accounts: IAccountMap = {
 const data = _.mapValues({
     accounts: [
     ],
-    transactions: [
+    splits: [
         {
             id: 1,
             splits: [1, 2, 3],
